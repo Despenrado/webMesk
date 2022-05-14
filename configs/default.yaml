@@ -1,0 +1,9 @@
+postgresql:
+  host: psql
+  port: 5432
+  user: gorm
+  password: gorm
+  dbname: webmesk
+  sslmode:  disable
+  timeZone: Europe/Warsaw
+  autoMigration: true
