@@ -1,4 +1,4 @@
-package storage
+package service
 
 import (
 	"context"
@@ -6,14 +6,14 @@ import (
 	"github.com/Despenrado/webMesk/internal/model"
 )
 
-type Storage interface {
-	User() UserRepository
-	Message() MessageRepository
-	Chat() ChatRepository
-	// Auth() AuthRepository
+type Service interface {
+	User() UserService
+	Message() MessageService
+	Chat() ChatService
+	// Auth() AuthService
 }
 
-type UserRepository interface {
+type UserService interface {
 	Create(ctx context.Context, user *model.User) (*model.User, error)
 	ReadAll(ctx context.Context, skip int, limit int) ([]model.User, error)
 	FindById(ctx context.Context, id uint) (*model.User, error)
@@ -21,10 +21,9 @@ type UserRepository interface {
 	Delete(ctx context.Context, id uint) error
 
 	FindByEmail(ctx context.Context, email string) (*model.User, error)
-	FindByUserName(ctx context.Context, userName string) (*model.User, error)
 }
 
-type MessageRepository interface {
+type MessageService interface {
 	Create(ctx context.Context, message *model.Message) (*model.Message, error)
 	ReadAll(ctx context.Context, skip int, limit int) ([]model.Message, error)
 	FindById(ctx context.Context, id uint) (*model.Message, error)
@@ -32,13 +31,10 @@ type MessageRepository interface {
 	Delete(ctx context.Context, id uint) error
 }
 
-type ChatRepository interface {
+type ChatService interface {
 	Create(ctx context.Context, chat *model.Chat) (*model.Chat, error)
 	ReadAll(ctx context.Context, skip int, limit int) ([]model.Chat, error)
 	FindById(ctx context.Context, id uint) (*model.Chat, error)
 	Update(ctx context.Context, chat *model.Chat) (*model.Chat, error)
 	Delete(ctx context.Context, id uint) error
 }
-
-// type AuthRepository interface {
-// }

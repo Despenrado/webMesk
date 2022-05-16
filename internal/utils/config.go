@@ -7,7 +7,8 @@ import (
 )
 
 type Config struct {
-	PostgreSQL PostgreSQL `yaml:"postgresql,omitempty"`
+	PostgreSQL    PostgreSQL    `yaml:"postgresql,omitempty"`
+	RestAPIServer RestAPIServer `yaml:"rest_api_server,omitempty"`
 }
 
 func LoadConfig(fileName string) (*Config, error) {
@@ -21,6 +22,10 @@ func LoadConfig(fileName string) (*Config, error) {
 		return nil, err
 	}
 	return config, nil
+}
+
+type RestAPIServer struct {
+	Port string `yaml:"port"`
 }
 
 type PostgreSQL struct {

@@ -7,3 +7,5 @@ postgresql:
   sslmode:  disable
   timeZone: Europe/Warsaw
   autoMigration: true
+rest_api_server:
+  port: 8081

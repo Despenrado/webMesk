@@ -39,16 +39,16 @@ func (s *Storage) User() storage.UserRepository {
 	return NewUserRepository(s)
 }
 
-// func (s *Storage) Chat() storage.ChatRepository {
-// 	if s.userRepository != nil {
-// 		return s.chatRepository
-// 	}
-// 	return NewChatRepository(s)
-// }
+func (s *Storage) Chat() storage.ChatRepository {
+	if s.userRepository != nil {
+		return s.chatRepository
+	}
+	return NewChatRepository(s)
+}
 
-// func (s *Storage) Message() storage.MessageRepository {
-// 	if s.userRepository != nil {
-// 		return s.messageRepository
-// 	}
-// 	return NewMessageRepository(s)
-// }
+func (s *Storage) Message() storage.MessageRepository {
+	if s.userRepository != nil {
+		return s.messageRepository
+	}
+	return NewMessageRepository(s)
+}

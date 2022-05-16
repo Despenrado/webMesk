@@ -6,11 +6,10 @@ services:
     environment:
       - POSTGRES_USER=gorm
       - POSTGRES_PASSWORD=gorm
-      - POSTGRES_DB=webmesk
     ports:
       - '5432:5432'
     volumes: 
-      - ~/database/postgres/webmesk:/var/lib/postgresql/data
+      - ~/database/postgres/webmesk_test:/var/lib/postgresql/data
   golang-restapi: # The name of the service
     build:
       context: ..

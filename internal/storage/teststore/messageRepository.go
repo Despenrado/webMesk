@@ -1,4 +1,4 @@
-package psql
+package teststore
 
 import (
 	"context"
@@ -7,12 +7,14 @@ import (
 )
 
 type MessageRepository struct {
-	storage *Storage
+	messageDB map[uint]*model.Message
+	storage   *Storage
 }
 
-func NewMessageRepository(storage *Storage) *MessageRepository {
+func NewMessageRepository(db map[uint]*model.Message, storage *Storage) *MessageRepository {
 	return &MessageRepository{
-		storage: storage,
+		messageDB: db,
+		storage:   storage,
 	}
 }
 
