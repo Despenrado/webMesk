@@ -2,6 +2,7 @@ package psql
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Despenrado/webMesk/internal/model"
 	"github.com/Despenrado/webMesk/pkg/utils"
@@ -49,11 +50,39 @@ func (ur *UserRepository) Update(ctx context.Context, user *model.User) (*model.
 }
 
 func (ur *UserRepository) Delete(ctx context.Context, id uint) error {
-	res := ur.storage.db.WithContext(ctx).Delete(&model.User{ID: id})
+	tx := ur.storage.db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	if err := tx.Error; err != nil {
+		return err
+	}
+	fmt.Println("1")
+	res := tx.WithContext(ctx).Exec("DELETE FROM user_chat WHERE user_id = ?", id)
+	if res.Error != nil {
+		tx.Rollback()
+		return res.Error
+	}
+	fmt.Println("2")
+	res = tx.WithContext(ctx).Delete(&model.User{ID: id})
+	if res.Error != nil {
+		tx.Rollback()
+		return res.Error
+	}
+	fmt.Println("3")
 	if res.RowsAffected != 1 {
+		tx.Rollback()
 		return utils.ErrRowsNumberAffected(int(res.RowsAffected))
 	}
-	return res.Error
+	fmt.Println("4")
+	err := tx.Commit().Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return nil
 }
 
 func (ur *UserRepository) FindByEmail(ctx context.Context, email string) (*model.User, error) {

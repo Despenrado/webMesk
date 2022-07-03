@@ -3,6 +3,7 @@ package psql
 import (
 	"github.com/Despenrado/webMesk/internal/model"
 	"github.com/Despenrado/webMesk/internal/storage"
+	"github.com/Despenrado/webMesk/internal/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -14,11 +15,9 @@ type Storage struct {
 	messageRepository *MessageRepository
 }
 
-func NewConnection(dsn string, autoMigration bool) (*gorm.DB, error) {
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if autoMigration {
-		db.AutoMigrate(&model.User{}, &model.Chat{}, &model.Message{})
-	}
+func NewConnection(config *utils.PostgreSQL) (*gorm.DB, error) {
+	db, err := gorm.Open(postgres.Open(config.PSQLToString()), &gorm.Config{})
+	db.AutoMigrate(&model.User{}, &model.Chat{}, &model.Message{})
 	return db, err
 }
 

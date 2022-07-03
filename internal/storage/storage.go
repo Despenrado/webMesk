@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"time"
 
 	"github.com/Despenrado/webMesk/internal/model"
 )
@@ -30,6 +31,9 @@ type MessageRepository interface {
 	FindById(ctx context.Context, id uint) (*model.Message, error)
 	Update(ctx context.Context, message *model.Message) (*model.Message, error)
 	Delete(ctx context.Context, id uint) error
+	FindByUserId(ctx context.Context, id uint) ([]model.Message, error)
+	FindByChatId(ctx context.Context, id uint) ([]model.Message, error)
+	FindByChatIdAndAfterDateTime(ctx context.Context, dateTime time.Time) ([]model.Message, error)
 }
 
 type ChatRepository interface {
@@ -38,6 +42,7 @@ type ChatRepository interface {
 	FindById(ctx context.Context, id uint) (*model.Chat, error)
 	Update(ctx context.Context, chat *model.Chat) (*model.Chat, error)
 	Delete(ctx context.Context, id uint) error
+	FindByUserId(ctx context.Context, id uint) ([]model.Chat, error)
 }
 
 // type AuthRepository interface {

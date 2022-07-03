@@ -6,13 +6,15 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var ConfigPath string
+
 type Config struct {
-	PostgreSQL    PostgreSQL    `yaml:"postgresql,omitempty"`
-	RestAPIServer RestAPIServer `yaml:"rest_api_server,omitempty"`
+	PostgreSQL    *PostgreSQL    `yaml:"postgresql,omitempty"`
+	RestAPIServer *RestAPIServer `yaml:"rest_api_server,omitempty"`
 }
 
-func LoadConfig(fileName string) (*Config, error) {
-	configFile, err := ioutil.ReadFile(fileName)
+func LoadConfig() (*Config, error) {
+	configFile, err := ioutil.ReadFile(ConfigPath)
 	if err != nil {
 		return nil, err
 	}

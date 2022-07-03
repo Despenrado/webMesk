@@ -37,3 +37,7 @@ func (cr *ChatRepository) Update(ctx context.Context, chat *model.Chat) (*model.
 func (cr *ChatRepository) Delete(ctx context.Context, id uint) error {
 	return nil
 }
+
+func (cr *ChatRepository) FindByUserId(ctx context.Context, id uint) ([]model.Chat, error) {
+	return nil, nil
+}

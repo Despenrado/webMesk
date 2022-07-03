@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/Despenrado/webMesk/internal/model"
+	"github.com/Despenrado/webMesk/internal/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -23,8 +24,8 @@ var tests = []testUser{
 
 func helperNewStorage() *Storage {
 	os.Setenv("TZ", "UTC")
-	dsn := "host=0.0.0.0 user=gorm password=gorm dbname=gorm port=5432 sslmode=disable"
-	db, err := NewConnection(dsn, true)
+	config := &utils.Config{}
+	db, err := NewConnection(config.PostgreSQL)
 	if err != nil {
 		panic(err)
 	}

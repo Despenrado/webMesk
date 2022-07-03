@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"time"
 
 	"github.com/Despenrado/webMesk/internal/model"
 )
@@ -29,6 +30,9 @@ type MessageService interface {
 	FindById(ctx context.Context, id uint) (*model.Message, error)
 	Update(ctx context.Context, message *model.Message) (*model.Message, error)
 	Delete(ctx context.Context, id uint) error
+	FindByUserId(ctx context.Context, id uint) ([]model.Message, error)
+	FindByChatId(ctx context.Context, id uint) ([]model.Message, error)
+	FindByChatIdAndAfterDateTime(ctx context.Context, dateTime time.Time) ([]model.Message, error)
 }
 
 type ChatService interface {
@@ -37,4 +41,5 @@ type ChatService interface {
 	FindById(ctx context.Context, id uint) (*model.Chat, error)
 	Update(ctx context.Context, chat *model.Chat) (*model.Chat, error)
 	Delete(ctx context.Context, id uint) error
+	FindByUserId(ctx context.Context, id uint) ([]model.Chat, error)
 }

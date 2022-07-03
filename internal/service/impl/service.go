@@ -12,13 +12,18 @@ type Service struct {
 	messageService *MessageService
 }
 
-func NewService(storage storage.Storage) *Service {
+func NewService(
+	storage storage.Storage,
+	userService *UserService,
+	chatService *ChatService,
+	messageService *MessageService,
+) *Service {
 	s := &Service{
-		storage: storage,
+		storage:        storage,
+		userService:    userService,
+		chatService:    chatService,
+		messageService: messageService,
 	}
-	s.userService = NewUserService(s.storage, s)
-	s.chatService = NewChatService(s.storage, s)
-	s.messageService = NewMessageService(s.storage, s)
 	return s
 }
 
@@ -26,19 +31,19 @@ func (s *Service) User() service.UserService {
 	if s.userService != nil {
 		return s.userService
 	}
-	return NewUserService(s.storage, s)
+	return NewUserService(s.storage)
 }
 
 func (s *Service) Chat() service.ChatService {
 	if s.userService != nil {
 		return s.chatService
 	}
-	return NewChatService(s.storage, s)
+	return NewChatService(s.storage)
 }
 
 func (s *Service) Message() service.MessageService {
 	if s.userService != nil {
 		return s.messageService
 	}
-	return NewMessageService(s.storage, s)
+	return NewMessageService(s.storage)
 }

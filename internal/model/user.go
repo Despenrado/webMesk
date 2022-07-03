@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation"
@@ -19,6 +20,7 @@ type User struct {
 }
 
 func (u *User) Validate() error {
+	fmt.Println("______________________user Validation___________________")
 	return validation.ValidateStruct(
 		u,
 		validation.Field(&u.UserName, validation.Required),

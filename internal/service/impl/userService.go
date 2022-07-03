@@ -9,19 +9,19 @@ import (
 )
 
 type UserService struct {
-	service *Service
 	storage storage.Storage
 }
 
-func NewUserService(storage storage.Storage, service *Service) *UserService {
+func NewUserService(storage storage.Storage) *UserService {
 	return &UserService{
-		service: service,
 		storage: storage,
 	}
 }
 
 func (us *UserService) Create(ctx context.Context, user *model.User) (*model.User, error) {
-	user.BeforeCreate()
+	if err := user.BeforeCreate(); err != nil {
+		return user, err
+	}
 	if tmp, _ := us.storage.User().FindByEmail(ctx, user.Email); tmp != nil {
 		return user, utils.ErrRecordAlreadyExists
 	}
@@ -47,12 +47,8 @@ func (us *UserService) Update(ctx context.Context, user *model.User) (*model.Use
 	if !oldUser.VerifyPassword(user.Password) {
 		return user, utils.ErrIncorrectEmailOrPassword
 	}
-	user.BeforeCreate()
-	if tmp, _ := us.storage.User().FindByEmail(ctx, user.Email); tmp != nil {
-		return user, utils.ErrRecordAlreadyExists
-	}
-	if tmp, _ := us.storage.User().FindByUserName(ctx, user.UserName); tmp != nil {
-		return user, utils.ErrRecordAlreadyExists
+	if err := user.BeforeCreate(); err != nil {
+		return user, err
 	}
 	return us.storage.User().Update(ctx, user)
 }
@@ -62,5 +58,9 @@ func (us *UserService) Delete(ctx context.Context, id uint) error {
 }
 
 func (us *UserService) FindByEmail(ctx context.Context, email string) (*model.User, error) {
-	return us.storage.User().FindByEmail(ctx, email)
+	user, err := us.storage.User().FindByEmail(ctx, email)
+	if err != nil {
+		return nil, utils.ErrRecordNotFound
+	}
+	return user, nil
 }

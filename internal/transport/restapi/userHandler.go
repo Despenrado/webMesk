@@ -2,13 +2,14 @@ package restapi
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/Despenrado/webMesk/internal/model"
 	"github.com/Despenrado/webMesk/internal/service"
 	"github.com/Despenrado/webMesk/pkg/utils"
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 	"gopkg.in/gorilla/mux.v1"
 )
 
@@ -52,15 +53,11 @@ func (uh *UserHandler) CreateUser() http.HandlerFunc {
 func (uh *UserHandler) FindUserById() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		fmt.Println("FindUserById")
 		sid, ok := vars["id"]
-		fmt.Println(vars)
-		fmt.Println(sid)
 		if !ok {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		fmt.Println("FindUserById")
 		id, err := strconv.ParseUint(sid, 10, 64)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
@@ -78,7 +75,6 @@ func (uh *UserHandler) FindUserById() http.HandlerFunc {
 
 func (uh *UserHandler) ReadUsersLimitedList() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("ReadUsersLimitedList")
 		vars := r.URL.Query()
 		skip, err := strconv.Atoi(vars.Get("skip"))
 		if err != nil {
@@ -152,9 +148,27 @@ func (uh *UserHandler) DeleteUserByID() http.HandlerFunc {
 		}
 		err = uh.service.User().Delete(r.Context(), uint(id))
 		if err != nil {
-			utils.Error(w, r, http.StatusNoContent, err)
+			utils.Error(w, r, http.StatusInternalServerError, err)
 			return
 		}
 		utils.Respond(w, r, http.StatusOK, nil)
+	})
+}
+
+func (uh *UserHandler) FindUserByEmail() http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		vars := r.URL.Query()
+		email := vars.Get("email")
+		if err := validation.Validate(email, is.Email); err != nil {
+			utils.Error(w, r, http.StatusBadRequest, err)
+			return
+		}
+		usr, err := uh.service.User().FindByEmail(r.Context(), email)
+		if err != nil {
+			utils.Error(w, r, http.StatusNoContent, err)
+			return
+		}
+		usr.Sanitize()
+		utils.Respond(w, r, http.StatusFound, usr)
 	})
 }
