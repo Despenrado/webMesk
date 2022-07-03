@@ -102,3 +102,23 @@ func (ur *UserRepository) FindByUserName(ctx context.Context, userName string) (
 	}
 	return user, res.Error
 }
+
+func (ur *UserRepository) FilterUser(ctx context.Context, userFilter *model.UserFilter) ([]model.User, error) {
+	query := ur.storage.db.WithContext(ctx)
+	if userFilter.Email != "" {
+		query = query.Where("email LIKE ?", "%"+userFilter.Email+"%")
+	}
+	if userFilter.UserName != "" {
+		query = query.Where("user_name LIKE ?", "%"+userFilter.UserName+"%")
+	}
+	if userFilter.SessionId != "" {
+		query = query.Where("sessionId LIKE ?", "%"+userFilter.SessionId+"%")
+	}
+	query = query.Offset(int(userFilter.Skip))
+	if userFilter.Limit != 0 {
+		query = query.Limit(int(userFilter.Limit))
+	}
+	users := []model.User{}
+	res := query.Find(users)
+	return users, res.Error
+}

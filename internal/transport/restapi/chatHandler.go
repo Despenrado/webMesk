@@ -73,20 +73,15 @@ func (ch *ChatHandler) FindChatById() http.HandlerFunc {
 	})
 }
 
-func (ch *ChatHandler) ReadChatLimitedList() http.HandlerFunc {
+func (ch *ChatHandler) FilterChats() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		vars := r.URL.Query()
-		skip, err := strconv.Atoi(vars.Get("skip"))
+		filter := &model.ChatFilter{}
+		err := json.NewDecoder(r.Body).Decode(filter)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		limit, err := strconv.Atoi(vars.Get("limit"))
-		if err != nil {
-			utils.Error(w, r, http.StatusBadRequest, err)
-			return
-		}
-		chats, err := ch.service.Chat().ReadAll(r.Context(), skip, limit)
+		chats, err := ch.service.Chat().FilterChat(r.Context(), filter)
 		if err != nil {
 			utils.Error(w, r, http.StatusNoContent, err)
 			return

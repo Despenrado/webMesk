@@ -10,6 +10,13 @@ type Chat struct {
 	MemberList []*User `json:"member_list,omitempty" gorm:"many2many:user_chat"`
 }
 
+type ChatFilter struct {
+	UserID   uint   `json:"user_id,omitempty"`
+	ChatName string `json:"chat_name,omitempty"`
+	Skip     uint   `json:"skip,omitempty"`
+	Limit    uint   `json:"limit,omitempty"`
+}
+
 func (c *Chat) Validate() error {
 	return validation.ValidateStruct(
 		c,

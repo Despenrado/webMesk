@@ -17,6 +17,15 @@ type Message struct {
 	MessageData map[string]string `json:"message_data,omitempty" gorm:"type:jsonb"`
 }
 
+type MessageFilter struct {
+	UserID              uint      `json:"user_id,omitempty"`
+	ChatID              uint      `json:"chat_id,omitempty"`
+	DateTime            time.Time `json:"date_time,omitempty"`
+	DateTimeComparation string    `json:"date_time_comparation,omitempty"`
+	Skip                uint      `json:"skip,omitempty"`
+	Limit               uint      `json:"limit,omitempty"`
+}
+
 func (m *Message) Validate() error {
 	return validation.ValidateStruct(
 		m,

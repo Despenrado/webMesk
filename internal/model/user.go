@@ -19,6 +19,14 @@ type User struct {
 	LastOnline time.Time `json:"last_online,omitempty"`
 }
 
+type UserFilter struct {
+	UserName  string `json:"user_name,omitempty"`
+	Email     string `json:"email,omitempty"`
+	SessionId string `json:"sessionId,omitempty"`
+	Skip      uint   `json:"skip,omitempty"`
+	Limit     uint   `json:"limit,omitempty"`
+}
+
 func (u *User) Validate() error {
 	fmt.Println("______________________user Validation___________________")
 	return validation.ValidateStruct(

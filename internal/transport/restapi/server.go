@@ -82,14 +82,14 @@ func RegisterHundlers(
 
 	usrRouter := router.PathPrefix(pfx + "/users").Subrouter()
 	usrRouter.HandleFunc("", userHandler.CreateUser()).Methods("POST")
-	usrRouter.HandleFunc("/read", userHandler.ReadUsersLimitedList()).Methods("GET")
+	usrRouter.HandleFunc("/filter", userHandler.FilterUsers()).Methods("GET")
 	usrRouter.HandleFunc("/{id:[0-9]+}", userHandler.FindUserById()).Methods("GET")
 	usrRouter.HandleFunc("/{id:[0-9]+}", userHandler.UpdateUserByID()).Methods("PUT")
 	usrRouter.HandleFunc("/{id:[0-9]+}", userHandler.DeleteUserByID()).Methods("DELETE")
 
 	chatRouter := router.PathPrefix(pfx + "/chats").Subrouter()
 	chatRouter.HandleFunc("", chatHandler.CreateChat()).Methods("POST")
-	chatRouter.HandleFunc("/read", chatHandler.ReadChatLimitedList()).Methods("GET")
+	chatRouter.HandleFunc("/filter", chatHandler.FilterChats()).Methods("GET")
 	chatRouter.HandleFunc("/{id:[0-9]+}", chatHandler.FindChatById()).Methods("GET")
 	chatRouter.HandleFunc("/{id:[0-9]+}", chatHandler.UpdateChatByID()).Methods("PUT")
 	chatRouter.HandleFunc("/{id:[0-9]+}", chatHandler.DeleteChatByID()).Methods("DELETE")

@@ -86,3 +86,7 @@ func (ur *UserRepository) FindByUserName(ctx context.Context, userName string) (
 	}
 	return nil, utils.ErrRowsNumberAffected(0)
 }
+
+func (ur *UserRepository) FilterUser(ctx context.Context, userFilter *model.UserFilter) ([]model.User, error) {
+	return nil, nil
+}

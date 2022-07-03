@@ -2,7 +2,6 @@ package psql
 
 import (
 	"context"
-	"time"
 
 	"github.com/Despenrado/webMesk/internal/model"
 	"github.com/Despenrado/webMesk/pkg/utils"
@@ -57,20 +56,26 @@ func (mr *MessageRepository) Delete(ctx context.Context, id uint) error {
 	return res.Error
 }
 
-func (mr *MessageRepository) FindByUserId(ctx context.Context, id uint) ([]model.Message, error) {
+func (mr *MessageRepository) FilterMessage(ctx context.Context, messageFilter *model.MessageFilter) ([]model.Message, error) {
+	query := mr.storage.db.WithContext(ctx)
+	if messageFilter.ChatID != 0 {
+		query = query.Where("email = ?", messageFilter.ChatID)
+	}
+	if messageFilter.DateTime.IsZero() && messageFilter.DateTimeComparation != "" {
+		filter := "date_time " + messageFilter.DateTimeComparation + " ?"
+		query = query.Where(filter, messageFilter.DateTime)
+	}
+	if messageFilter.UserID != 0 {
+		query = query.Where(map[string]interface{}{"user_id": messageFilter.UserID})
+	}
+	if messageFilter.ChatID != 0 {
+		query = query.Where(map[string]interface{}{"chat_id": messageFilter.ChatID})
+	}
+	query = query.Offset(int(messageFilter.Skip))
+	if messageFilter.Limit != 0 {
+		query = query.Limit(int(messageFilter.Limit))
+	}
 	messages := []model.Message{}
-	res := mr.storage.db.WithContext(ctx).Where(map[string]interface{}{"user_id": id}).Order("date_time esc").Find(&messages)
-	return messages, res.Error
-}
-
-func (mr *MessageRepository) FindByChatId(ctx context.Context, id uint) ([]model.Message, error) {
-	messages := []model.Message{}
-	res := mr.storage.db.WithContext(ctx).Where(map[string]interface{}{"chat_id": id}).Order("date_time esc").Find(&messages)
-	return messages, res.Error
-}
-
-func (mr *MessageRepository) FindByChatIdAndAfterDateTime(ctx context.Context, dateTime time.Time) ([]model.Message, error) {
-	messages := []model.Message{}
-	res := mr.storage.db.WithContext(ctx).Where("date_time >= ?", dateTime).Order("date_time esc").Find(&messages)
+	res := query.Find(messages)
 	return messages, res.Error
 }

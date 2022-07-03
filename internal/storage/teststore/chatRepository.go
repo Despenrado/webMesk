@@ -41,3 +41,7 @@ func (cr *ChatRepository) Delete(ctx context.Context, id uint) error {
 func (cr *ChatRepository) FindByUserId(ctx context.Context, id uint) ([]model.Chat, error) {
 	return nil, nil
 }
+
+func (cr *ChatRepository) FilterChat(ctx context.Context, chatFilter *model.ChatFilter) ([]model.Chat, error) {
+	return nil, nil
+}

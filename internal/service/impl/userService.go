@@ -64,3 +64,7 @@ func (us *UserService) FindByEmail(ctx context.Context, email string) (*model.Us
 	}
 	return user, nil
 }
+
+func (us *UserService) FilterUser(ctx context.Context, userFilter *model.UserFilter) ([]model.User, error) {
+	return us.storage.User().FilterUser(ctx, userFilter)
+}

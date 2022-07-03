@@ -66,3 +66,7 @@ func (cs *ChatService) FindByUserId(ctx context.Context, id uint) ([]model.Chat,
 	}
 	return chats, nil
 }
+
+func (cs *ChatService) FilterChat(ctx context.Context, chatFilter *model.ChatFilter) ([]model.Chat, error) {
+	return cs.storage.Chat().FilterChat(ctx, chatFilter)
+}

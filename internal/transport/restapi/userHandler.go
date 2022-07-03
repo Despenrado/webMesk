@@ -73,20 +73,15 @@ func (uh *UserHandler) FindUserById() http.HandlerFunc {
 	})
 }
 
-func (uh *UserHandler) ReadUsersLimitedList() http.HandlerFunc {
+func (uh *UserHandler) FilterUsers() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		vars := r.URL.Query()
-		skip, err := strconv.Atoi(vars.Get("skip"))
+		filter := &model.UserFilter{}
+		err := json.NewDecoder(r.Body).Decode(filter)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		limit, err := strconv.Atoi(vars.Get("limit"))
-		if err != nil {
-			utils.Error(w, r, http.StatusBadRequest, err)
-			return
-		}
-		users, err := uh.service.User().ReadAll(r.Context(), skip, limit)
+		users, err := uh.service.User().FilterUser(r.Context(), filter)
 		if err != nil {
 			utils.Error(w, r, http.StatusNoContent, err)
 			return

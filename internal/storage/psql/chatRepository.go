@@ -91,3 +91,20 @@ func (cr *ChatRepository) FindByUserId(ctx context.Context, id uint) ([]model.Ch
 	res := cr.storage.db.WithContext(ctx).Preload("MemberList", map[string]interface{}{"id": id}).Find(&chats)
 	return chats, res.Error
 }
+
+func (cr *ChatRepository) FilterChat(ctx context.Context, chatFilter *model.ChatFilter) ([]model.Chat, error) {
+	query := cr.storage.db.WithContext(ctx)
+	if chatFilter.ChatName != "" {
+		query = query.Where("chat_name LIKE ?", "%"+chatFilter.ChatName+"%")
+	}
+	if chatFilter.UserID != 0 {
+		query = query.Where("user_id LIKE ?", chatFilter.UserID)
+	}
+	query = query.Offset(int(chatFilter.Skip))
+	if chatFilter.Limit != 0 {
+		query = query.Limit(int(chatFilter.Limit))
+	}
+	chat := []model.Chat{}
+	res := query.Find(chat)
+	return chat, res.Error
+}

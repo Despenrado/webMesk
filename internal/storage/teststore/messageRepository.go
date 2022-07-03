@@ -2,7 +2,6 @@ package teststore
 
 import (
 	"context"
-	"time"
 
 	"github.com/Despenrado/webMesk/internal/model"
 )
@@ -39,14 +38,6 @@ func (mr *MessageRepository) Delete(ctx context.Context, id uint) error {
 	return nil
 }
 
-func (mr *MessageRepository) FindByUserId(ctx context.Context, id uint) ([]model.Message, error) {
-	return nil, nil
-}
-
-func (mr *MessageRepository) FindByChatId(ctx context.Context, id uint) ([]model.Message, error) {
-	return nil, nil
-}
-
-func (mr *MessageRepository) FindByChatIdAndAfterDateTime(ctx context.Context, dateTime time.Time) ([]model.Message, error) {
+func (mr *MessageRepository) FilterMessage(ctx context.Context, essageFilter *model.MessageFilter) ([]model.Message, error) {
 	return nil, nil
 }

@@ -2,7 +2,6 @@ package impl
 
 import (
 	"context"
-	"time"
 
 	"github.com/Despenrado/webMesk/internal/model"
 	"github.com/Despenrado/webMesk/internal/storage"
@@ -53,26 +52,6 @@ func (ms *MessageService) Delete(ctx context.Context, id uint) error {
 	return ms.storage.Message().Delete(ctx, id)
 }
 
-func (ms *MessageService) FindByUserId(ctx context.Context, id uint) ([]model.Message, error) {
-	messages, err := ms.storage.Message().FindByUserId(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return messages, nil
-}
-
-func (ms *MessageService) FindByChatId(ctx context.Context, id uint) ([]model.Message, error) {
-	messages, err := ms.storage.Message().FindByChatId(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return messages, nil
-}
-
-func (ms *MessageService) FindByChatIdAndAfterDateTime(ctx context.Context, dateTime time.Time) ([]model.Message, error) {
-	messages, err := ms.storage.Message().FindByChatIdAndAfterDateTime(ctx, dateTime)
-	if err != nil {
-		return nil, err
-	}
-	return messages, nil
+func (ms *MessageService) FilterMessage(ctx context.Context, messageFilter *model.MessageFilter) ([]model.Message, error) {
+	return ms.storage.Message().FilterMessage(ctx, messageFilter)
 }
