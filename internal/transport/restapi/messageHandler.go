@@ -72,28 +72,23 @@ func (mh *MessageHandler) FindMessageByID() http.HandlerFunc {
 	})
 }
 
-func (mh *MessageHandler) ReadMessagesLimitedList() http.HandlerFunc {
+func (mh *MessageHandler) FilterMessages() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		vars := r.URL.Query()
-		skip, err := strconv.Atoi(vars.Get("skip"))
+		filter := &model.MessageFilter{}
+		err := json.NewDecoder(r.Body).Decode(filter)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		limit, err := strconv.Atoi(vars.Get("limit"))
-		if err != nil {
-			utils.Error(w, r, http.StatusBadRequest, err)
-			return
-		}
-		message, err := mh.service.Message().ReadAll(r.Context(), skip, limit)
+		messages, err := mh.service.Message().FilterMessage(r.Context(), filter)
 		if err != nil {
 			utils.Error(w, r, http.StatusNoContent, err)
 			return
 		}
-		for i, _ := range message {
-			message[i].Sanitize()
+		for i, _ := range messages {
+			messages[i].Sanitize()
 		}
-		utils.Respond(w, r, http.StatusOK, message)
+		utils.Respond(w, r, http.StatusOK, messages)
 	})
 }
 

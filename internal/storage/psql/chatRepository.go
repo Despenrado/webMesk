@@ -104,7 +104,7 @@ func (cr *ChatRepository) FilterChat(ctx context.Context, chatFilter *model.Chat
 	if chatFilter.Limit != 0 {
 		query = query.Limit(int(chatFilter.Limit))
 	}
-	chat := []model.Chat{}
-	res := query.Find(chat)
-	return chat, res.Error
+	chats := []model.Chat{}
+	res := query.Find(&chats)
+	return chats, res.Error
 }

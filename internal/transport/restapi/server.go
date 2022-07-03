@@ -40,7 +40,7 @@ func NewServer(
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			logger.Infof("Server started on port %s...\n", config.RestAPIServer.Port)
+			logger.Infof("Server started on port %s...", config.RestAPIServer.Port)
 			go func() {
 				if err := http.ListenAndServe(":"+config.RestAPIServer.Port, router); err != nil {
 					logger.Warn("Server stopped", err)
@@ -82,15 +82,22 @@ func RegisterHundlers(
 
 	usrRouter := router.PathPrefix(pfx + "/users").Subrouter()
 	usrRouter.HandleFunc("", userHandler.CreateUser()).Methods("POST")
-	usrRouter.HandleFunc("/filter", userHandler.FilterUsers()).Methods("GET")
+	usrRouter.HandleFunc("/filter", userHandler.FilterUsers()).Methods("POST")
 	usrRouter.HandleFunc("/{id:[0-9]+}", userHandler.FindUserById()).Methods("GET")
 	usrRouter.HandleFunc("/{id:[0-9]+}", userHandler.UpdateUserByID()).Methods("PUT")
 	usrRouter.HandleFunc("/{id:[0-9]+}", userHandler.DeleteUserByID()).Methods("DELETE")
 
 	chatRouter := router.PathPrefix(pfx + "/chats").Subrouter()
 	chatRouter.HandleFunc("", chatHandler.CreateChat()).Methods("POST")
-	chatRouter.HandleFunc("/filter", chatHandler.FilterChats()).Methods("GET")
+	chatRouter.HandleFunc("/filter", chatHandler.FilterChats()).Methods("POST")
 	chatRouter.HandleFunc("/{id:[0-9]+}", chatHandler.FindChatById()).Methods("GET")
 	chatRouter.HandleFunc("/{id:[0-9]+}", chatHandler.UpdateChatByID()).Methods("PUT")
 	chatRouter.HandleFunc("/{id:[0-9]+}", chatHandler.DeleteChatByID()).Methods("DELETE")
+
+	messageRouter := router.PathPrefix(pfx + "/messages").Subrouter()
+	messageRouter.HandleFunc("", messageHandler.CreateMessage()).Methods("POST")
+	messageRouter.HandleFunc("/filter", messageHandler.FilterMessages()).Methods("POST")
+	messageRouter.HandleFunc("/{id:[0-9]+}", messageHandler.FindMessageByID()).Methods("GET")
+	messageRouter.HandleFunc("/{id:[0-9]+}", messageHandler.UpdateMessageByID()).Methods("PUT")
+	messageRouter.HandleFunc("/{id:[0-9]+}", messageHandler.DeleteMessageByID()).Methods("DELETE")
 }

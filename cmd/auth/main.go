@@ -26,7 +26,6 @@ func main() {
 			impl.NewUserService,
 			impl.NewChatService,
 			impl.NewMessageService,
-			// impl.NewService,
 			restapi.NewUserHandler,
 			restapi.NewChatHandler,
 			restapi.NewMessageHandler,

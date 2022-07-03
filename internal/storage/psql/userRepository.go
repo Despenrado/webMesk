@@ -3,6 +3,7 @@ package psql
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/Despenrado/webMesk/internal/model"
 	"github.com/Despenrado/webMesk/pkg/utils"
@@ -105,6 +106,7 @@ func (ur *UserRepository) FindByUserName(ctx context.Context, userName string) (
 
 func (ur *UserRepository) FilterUser(ctx context.Context, userFilter *model.UserFilter) ([]model.User, error) {
 	query := ur.storage.db.WithContext(ctx)
+	log.Println("Nikita - filter:", userFilter)
 	if userFilter.Email != "" {
 		query = query.Where("email LIKE ?", "%"+userFilter.Email+"%")
 	}
@@ -118,7 +120,9 @@ func (ur *UserRepository) FilterUser(ctx context.Context, userFilter *model.User
 	if userFilter.Limit != 0 {
 		query = query.Limit(int(userFilter.Limit))
 	}
+	log.Println("Nikita - query created")
 	users := []model.User{}
-	res := query.Find(users)
+	res := query.Find(&users)
+	log.Println("Nikita - query created")
 	return users, res.Error
 }

@@ -2,6 +2,7 @@ package restapi
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -76,11 +77,13 @@ func (uh *UserHandler) FindUserById() http.HandlerFunc {
 func (uh *UserHandler) FilterUsers() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		filter := &model.UserFilter{}
+		log.Println("Nikita - undecoded")
 		err := json.NewDecoder(r.Body).Decode(filter)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
+		log.Println("Nikita - decoded")
 		users, err := uh.service.User().FilterUser(r.Context(), filter)
 		if err != nil {
 			utils.Error(w, r, http.StatusNoContent, err)

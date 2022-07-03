@@ -58,10 +58,7 @@ func (mr *MessageRepository) Delete(ctx context.Context, id uint) error {
 
 func (mr *MessageRepository) FilterMessage(ctx context.Context, messageFilter *model.MessageFilter) ([]model.Message, error) {
 	query := mr.storage.db.WithContext(ctx)
-	if messageFilter.ChatID != 0 {
-		query = query.Where("email = ?", messageFilter.ChatID)
-	}
-	if messageFilter.DateTime.IsZero() && messageFilter.DateTimeComparation != "" {
+	if !messageFilter.DateTime.IsZero() && messageFilter.DateTimeComparation != "" {
 		filter := "date_time " + messageFilter.DateTimeComparation + " ?"
 		query = query.Where(filter, messageFilter.DateTime)
 	}
@@ -76,6 +73,6 @@ func (mr *MessageRepository) FilterMessage(ctx context.Context, messageFilter *m
 		query = query.Limit(int(messageFilter.Limit))
 	}
 	messages := []model.Message{}
-	res := query.Find(messages)
+	res := query.Find(&messages)
 	return messages, res.Error
 }
