@@ -100,4 +100,5 @@ func RegisterHundlers(
 	messageRouter.HandleFunc("/{id:[0-9]+}", messageHandler.FindMessageByID()).Methods("GET")
 	messageRouter.HandleFunc("/{id:[0-9]+}", messageHandler.UpdateMessageByID()).Methods("PUT")
 	messageRouter.HandleFunc("/{id:[0-9]+}", messageHandler.DeleteMessageByID()).Methods("DELETE")
+	messageRouter.HandleFunc("/markasread/{id:[0-9]+}", messageHandler.MarkAsRead()).Methods("GET")
 }

@@ -41,3 +41,7 @@ func (mr *MessageRepository) Delete(ctx context.Context, id uint) error {
 func (mr *MessageRepository) FilterMessage(ctx context.Context, essageFilter *model.MessageFilter) ([]model.Message, error) {
 	return nil, nil
 }
+
+func (mr *MessageRepository) MarkAsRead(ctx context.Context, id uint, user_id uint) error {
+	return nil
+}

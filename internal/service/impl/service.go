@@ -7,9 +7,11 @@ import (
 
 type Service struct {
 	storage        storage.Storage
+	cacheStorage   storage.CacheStorage
 	userService    *UserService
 	chatService    *ChatService
 	messageService *MessageService
+	atuthService   *AtuthService
 }
 
 func NewService(
@@ -17,12 +19,14 @@ func NewService(
 	userService *UserService,
 	chatService *ChatService,
 	messageService *MessageService,
+	atuthService *AtuthService,
 ) *Service {
 	s := &Service{
 		storage:        storage,
 		userService:    userService,
 		chatService:    chatService,
 		messageService: messageService,
+		atuthService:   atuthService,
 	}
 	return s
 }
@@ -31,19 +35,31 @@ func (s *Service) User() service.UserService {
 	if s.userService != nil {
 		return s.userService
 	}
-	return NewUserService(s.storage)
+	s.userService = NewUserService(s.storage)
+	return s.userService
 }
 
 func (s *Service) Chat() service.ChatService {
-	if s.userService != nil {
+	if s.chatService != nil {
 		return s.chatService
 	}
-	return NewChatService(s.storage)
+	s.chatService = NewChatService(s.storage)
+	return s.chatService
 }
 
 func (s *Service) Message() service.MessageService {
-	if s.userService != nil {
+	if s.messageService != nil {
 		return s.messageService
 	}
-	return NewMessageService(s.storage)
+	s.messageService = NewMessageService(s.storage)
+	return s.messageService
+}
+
+func (s *Service) Auth() service.AuthService {
+	if s.atuthService != nil {
+		return s.atuthService
+	}
+	s.User()
+	s.atuthService = NewAuthService(s.userService, s.cacheStorage.Auth())
+	return s.atuthService
 }

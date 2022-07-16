@@ -10,7 +10,7 @@ type Service interface {
 	User() UserService
 	Message() MessageService
 	Chat() ChatService
-	// Auth() AuthService
+	Auth() AuthService
 }
 
 type UserService interface {
@@ -30,6 +30,7 @@ type MessageService interface {
 	Update(ctx context.Context, message *model.Message) (*model.Message, error)
 	Delete(ctx context.Context, id uint) error
 	FilterMessage(ctx context.Context, messageFilter *model.MessageFilter) ([]model.Message, error)
+	MarkAsRead(ctx context.Context, id uint, user_id uint) error
 }
 
 type ChatService interface {
@@ -40,4 +41,12 @@ type ChatService interface {
 	Delete(ctx context.Context, id uint) error
 	FindByUserId(ctx context.Context, id uint) ([]model.Chat, error)
 	FilterChat(ctx context.Context, chatFilter *model.ChatFilter) ([]model.Chat, error)
+}
+
+type AuthService interface {
+	SignUp(context.Context, *model.User) (string, error)
+	SignIn(context.Context, *model.User) (string, error)
+	CheckAuthorization(context.Context, string, string) error
+	Reauthorize(context.Context, string, string) error
+	LogOut(context.Context, string, string) error
 }

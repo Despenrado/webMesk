@@ -148,3 +148,32 @@ func (mh *MessageHandler) DeleteMessageByID() http.HandlerFunc {
 		utils.Respond(w, r, http.StatusOK, nil)
 	})
 }
+
+func (mh *MessageHandler) MarkAsRead() http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		sid, ok := vars["id"]
+		if !ok {
+			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+			return
+		}
+		id, err := strconv.ParseUint(sid, 10, 64)
+		if err != nil {
+			utils.Error(w, r, http.StatusBadRequest, err)
+			return
+		}
+		queryVars := r.URL.Query()
+		usid := queryVars.Get("user_id")
+		user_id, err := strconv.ParseUint(usid, 10, 64)
+		if err != nil {
+			utils.Error(w, r, http.StatusBadRequest, err)
+			return
+		}
+		err = mh.service.Message().MarkAsRead(r.Context(), uint(id), uint(user_id))
+		if err != nil {
+			utils.Error(w, r, http.StatusInternalServerError, err)
+			return
+		}
+		utils.Respond(w, r, http.StatusOK, nil)
+	})
+}

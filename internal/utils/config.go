@@ -2,6 +2,7 @@ package utils
 
 import (
 	"io/ioutil"
+	"time"
 
 	"gopkg.in/yaml.v2"
 )
@@ -9,8 +10,9 @@ import (
 var ConfigPath string
 
 type Config struct {
-	PostgreSQL    *PostgreSQL    `yaml:"postgresql,omitempty"`
-	RestAPIServer *RestAPIServer `yaml:"rest_api_server,omitempty"`
+	PostgreSQL    *PostgreSQLConfig    `yaml:"postgresql,omitempty"`
+	RestAPIServer *RestAPIServerConfig `yaml:"rest_api_server,omitempty"`
+	RedisConfig   *RedisConfig         `yaml:"redis,omitempty"`
 }
 
 func LoadConfig() (*Config, error) {
@@ -26,11 +28,16 @@ func LoadConfig() (*Config, error) {
 	return config, nil
 }
 
-type RestAPIServer struct {
+type RestAPIServerConfig struct {
 	Port string `yaml:"port"`
 }
 
-type PostgreSQL struct {
+type RedisConfig struct {
+	Addr       string        `yaml:"addr"`
+	TknExpires time.Duration `yaml:"token_expires"`
+}
+
+type PostgreSQLConfig struct {
 	Host          string `yaml:"host"`
 	Port          string `yaml:"port"`
 	User          string `yaml:"user"`
@@ -41,7 +48,7 @@ type PostgreSQL struct {
 	AutoMigration bool   `yaml:"autoMigration"`
 }
 
-func (p *PostgreSQL) PSQLToString() string {
+func (p *PostgreSQLConfig) PSQLToString() string {
 	return "host=" + p.Host + " port=" + p.Port + " dbname=" + p.DBName +
 		" user=" + p.User + " password=" + p.Password +
 		" sslmode=" + p.SSLMode + " TimeZone=" + p.TimeZone

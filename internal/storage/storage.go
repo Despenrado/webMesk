@@ -10,7 +10,6 @@ type Storage interface {
 	User() UserRepository
 	Message() MessageRepository
 	Chat() ChatRepository
-	// Auth() AuthRepository
 }
 
 type UserRepository interface {
@@ -31,6 +30,7 @@ type MessageRepository interface {
 	Update(ctx context.Context, message *model.Message) (*model.Message, error)
 	Delete(ctx context.Context, id uint) error
 	FilterMessage(ctx context.Context, messageFilter *model.MessageFilter) ([]model.Message, error)
+	MarkAsRead(ctx context.Context, id uint, user_id uint) error
 }
 
 type ChatRepository interface {
@@ -42,6 +42,3 @@ type ChatRepository interface {
 	FindByUserId(ctx context.Context, id uint) ([]model.Chat, error)
 	FilterChat(ctx context.Context, chatFilter *model.ChatFilter) ([]model.Chat, error)
 }
-
-// type AuthRepository interface {
-// }

@@ -55,3 +55,7 @@ func (ms *MessageService) Delete(ctx context.Context, id uint) error {
 func (ms *MessageService) FilterMessage(ctx context.Context, messageFilter *model.MessageFilter) ([]model.Message, error) {
 	return ms.storage.Message().FilterMessage(ctx, messageFilter)
 }
+
+func (ms *MessageService) MarkAsRead(ctx context.Context, id uint, user_id uint) error {
+	return ms.storage.Message().MarkAsRead(ctx, id, user_id)
+}

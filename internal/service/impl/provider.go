@@ -13,11 +13,13 @@ func ProvideServiceImpl(
 	userService *UserService,
 	chatService *ChatService,
 	messageService *MessageService,
+	authService *AtuthService,
 ) service.Service {
 	return NewService(
 		storage,
 		userService,
 		chatService,
 		messageService,
+		authService,
 	)
 }

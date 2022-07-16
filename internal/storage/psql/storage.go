@@ -15,7 +15,7 @@ type Storage struct {
 	messageRepository *MessageRepository
 }
 
-func NewConnection(config *utils.PostgreSQL) (*gorm.DB, error) {
+func NewConnection(config *utils.PostgreSQLConfig) (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(config.PSQLToString()), &gorm.Config{})
 	db.AutoMigrate(&model.User{}, &model.Chat{}, &model.Message{})
 	return db, err
