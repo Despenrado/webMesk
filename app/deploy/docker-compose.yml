@@ -1,0 +1,133 @@
+version: "3.5"
+services:
+  # pstgres-master
+  db-master:
+    container_name: postgres-master-webmesk
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+    image: docker.io/bitnami/postgresql:14
+    restart: always
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      # - POSTGRESQL_SYNCHRONOUS_COMMIT_MODE=on
+      - POSTGRESQL_USERNAME=gorm
+      - POSTGRESQL_PASSWORD=gorm
+      - POSTGRESQL_DATABASE=webmesk
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '49261:5432'
+    volumes: 
+      - ~/database/postgresql/webmesk:/bitnami/postgresql
+  db-slave-1:
+    container_name: postgres-slave-1-webmesk
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+    image: docker.io/bitnami/postgresql:14
+    restart: always
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_USERNAME=gorm
+      - POSTGRESQL_PASSWORD=gorm
+      - POSTGRESQL_MASTER_HOST=db-master
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+      - ALLOW_EMPTY_PASSWORD=yes
+    depends_on:
+      - db-master
+    ports:
+      - 5432
+    volumes: 
+      - ~/database/postgresql/webmesk_slave:/bitnami/postgresql
+  # db-slave-2:
+  #   container_name: postgres-slave-2-webmesk
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '1.0'
+  #         memory: 1024M
+  #   image: docker.io/bitnami/postgresql:14
+  #   restart: always
+  #   environment:
+  #     - POSTGRESQL_REPLICATION_MODE=slave
+  #     - POSTGRESQL_REPLICATION_USER=repl_user
+  #     - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+  #     - POSTGRESQL_USERNAME=gorm
+  #     - POSTGRESQL_PASSWORD=gorm
+  #     - POSTGRESQL_MASTER_HOST=db-master
+  #     - POSTGRESQL_MASTER_PORT_NUMBER=5432
+  #     - ALLOW_EMPTY_PASSWORD=yes
+  #   depends_on:
+  #     - db-master
+  #   ports:
+  #     - 5432
+  #   volumes: 
+  #     - ~/database/postgresql/webmesk_slave:/bitnami/postgresql
+  
+  # redis
+  cache-db:
+    container_name: redis-webmesk # Container name
+    image: redis
+    ports:
+      - "63799:6379"
+    volumes: # Volume binding
+      - "/opt/redis/data:/data"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+  
+  # restapi
+  golang-restapi: # The name of the service
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile # Location of our Dockerfile
+    image: despenrado/golang-restapi-webmesk:test.0.1
+    container_name: golang-restapi-webmesk # Container name
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1024M
+    depends_on: # start after
+      - db-master
+      - cache-db
+    ports:
+      - "8081"
+    links: # list mapping: service_name:name_how_will_see_your_program
+      - "db-master:psql"
+      - "db-slave-1:psql-slave-1"
+      # - "db-slave-2:psql-slave-2"
+      - "cache-db:redis"
+
+  nginx:
+    image: nginx:1.22
+    container_name: nginx-webmesk
+    volumes:
+      - ../configs/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../configs/error.log:/etc/nginx/logs/error.log
+    depends_on:
+      - golang-restapi
+    ports:
+      - "8081:8081"
+      
+  telegraf:
+    image: telegraf
+    container_name: telegraf
+    restart: always
+    volumes:
+      - ../configs/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    user: telegraf:969 # allows to read '/var/run/docker.sock'. 'number' is the group of docker daemon
+    ports:
+      - "8125:8125"
+

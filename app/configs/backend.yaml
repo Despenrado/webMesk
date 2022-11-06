@@ -1,0 +1,23 @@
+postgresql:
+  master:
+    host: psql
+    port: 5432
+    user: gorm
+    password: gorm
+    dbname: webmesk
+    sslmode:  disable
+    timeZone: Europe/Warsaw
+    autoMigration: true
+  slave:
+    - host: psql-slave-1
+      port: 5432
+    # - host: psql-slave-2
+    #   port: 5432
+rest_api_server:
+  port: 8081
+  http_only: false
+jwt:
+  token_expires: 2592000s
+  jwt_key: test_key
+redis:
+  addr: redis:6379
