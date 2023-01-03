@@ -33,11 +33,19 @@ func (ms *MessageService) Create(ctx context.Context, message *model.Message) (*
 	if err != nil {
 		return message, err
 	}
+	message.Sanitize()
 	return message, nil
 }
 
 func (ms *MessageService) ReadAll(ctx context.Context, skip int, limit int) ([]model.Message, error) {
-	return ms.storage.Message().ReadAll(ctx, skip, limit)
+	messages, err := ms.storage.Message().ReadAll(ctx, skip, limit)
+	if err != nil {
+		return nil, err
+	}
+	for i, _ := range messages {
+		messages[i].Sanitize()
+	}
+	return messages, nil
 }
 
 func (ms *MessageService) FindById(ctx context.Context, id uint) (*model.Message, error) {
@@ -45,14 +53,16 @@ func (ms *MessageService) FindById(ctx context.Context, id uint) (*model.Message
 	if err != nil {
 		return nil, err
 	}
+	message.Sanitize()
 	return message, nil
 }
 
 func (ms *MessageService) Update(ctx context.Context, message *model.Message) (*model.Message, error) {
 	message, err := ms.storage.Message().Update(ctx, message)
 	if err != nil {
-		return message, err
+		return nil, err
 	}
+	message.Sanitize()
 	return message, nil
 }
 
@@ -61,7 +71,14 @@ func (ms *MessageService) Delete(ctx context.Context, message *model.Message) er
 }
 
 func (ms *MessageService) FilterMessage(ctx context.Context, messageFilter *model.MessageFilter) ([]model.Message, error) {
-	return ms.storage.Message().FilterMessage(ctx, messageFilter)
+	messages, err := ms.storage.Message().FilterMessage(ctx, messageFilter)
+	if err != nil {
+		return nil, err
+	}
+	for i, _ := range messages {
+		messages[i].Sanitize()
+	}
+	return messages, nil
 }
 
 func (ms *MessageService) MarkAsRead(ctx context.Context, id uint, user_id uint) error {

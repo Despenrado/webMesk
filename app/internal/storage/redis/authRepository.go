@@ -21,8 +21,6 @@ func NewAuthRepository(storage *CacheStorage) *AuthRepository {
 
 func (ar *AuthRepository) Set(ctx context.Context, token *model.UserAuth, expiresAt time.Duration) error {
 	if err := ar.storage.redisClient.Set(token.ID, token, expiresAt).Err(); err != nil {
-		log.Println("redis")
-		log.Println(err)
 		return err
 	}
 	// if _, err := ar.storage.redisClient.HSetNX(token.ID, "user_auth", token).Result(); err != nil {

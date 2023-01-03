@@ -52,13 +52,15 @@ func (lg *Logger) LogRequest(next http.Handler) http.Handler {
 		default:
 			level = logrus.InfoLevel
 		}
-		logger.Logf(
-			level,
-			"completed request: id:%s, %d %s in %v",
-			w.Header().Get("X-Request-ID"),
-			resWriter.code,
-			http.StatusText(resWriter.code),
-			time.Since(start),
-		)
+		if level != logrus.InfoLevel {
+			logger.Logf(
+				level,
+				"completed request: id:%s, %d %s in %v",
+				w.Header().Get("X-Request-ID"),
+				resWriter.code,
+				http.StatusText(resWriter.code),
+				time.Since(start),
+			)
+		}
 	})
 }

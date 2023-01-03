@@ -2,7 +2,6 @@ package impl
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/Despenrado/webMesk/internal/model"
 	"github.com/Despenrado/webMesk/internal/storage"
@@ -22,18 +21,20 @@ func (cs *ChatService) Create(ctx context.Context, chat *model.Chat) (*model.Cha
 	if err := chat.BeforeCreate(); err != nil {
 		return chat, err
 	}
-	fmt.Println(chat)
 	chat, err := cs.storage.Chat().Create(ctx, chat)
 	if err != nil {
 		return chat, err
 	}
-	fmt.Println(chat)
-	fmt.Println(chat)
+	chat.Sanitize()
 	return chat, nil
 }
 
 func (cs *ChatService) ReadAll(ctx context.Context, skip int, limit int) ([]model.Chat, error) {
-	return cs.storage.Chat().ReadAll(ctx, skip, limit)
+	chats, err := cs.storage.Chat().ReadAll(ctx, skip, limit)
+	for i, _ := range chats {
+		chats[i].Sanitize()
+	}
+	return chats, err
 }
 
 func (cs *ChatService) FindById(ctx context.Context, id uint) (*model.Chat, error) {
@@ -41,6 +42,7 @@ func (cs *ChatService) FindById(ctx context.Context, id uint) (*model.Chat, erro
 	if err != nil {
 		return nil, err
 	}
+	chat.Sanitize()
 	return chat, nil
 }
 
@@ -50,8 +52,9 @@ func (cs *ChatService) Update(ctx context.Context, chat *model.Chat) (*model.Cha
 	}
 	chat, err := cs.storage.Chat().Update(ctx, chat)
 	if err != nil {
-		return chat, err
+		return nil, err
 	}
+	chat.Sanitize()
 	return chat, nil
 }
 
@@ -64,9 +67,16 @@ func (cs *ChatService) FindByUserId(ctx context.Context, id uint) ([]model.Chat,
 	if err != nil {
 		return nil, err
 	}
+	for i, _ := range chats {
+		chats[i].Sanitize()
+	}
 	return chats, nil
 }
 
 func (cs *ChatService) FilterChat(ctx context.Context, chatFilter *model.ChatFilter) ([]model.Chat, error) {
-	return cs.storage.Chat().FilterChat(ctx, chatFilter)
+	chats, err := cs.storage.Chat().FilterChat(ctx, chatFilter)
+	for i, _ := range chats {
+		chats[i].Sanitize()
+	}
+	return chats, err
 }

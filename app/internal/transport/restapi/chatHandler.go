@@ -54,7 +54,6 @@ func (ch *ChatHandler) CreateChat() http.HandlerFunc {
 			utils.Error(w, r, http.StatusInternalServerError, err)
 			return
 		}
-		chat.Sanitize()
 		utils.Respond(w, r, http.StatusCreated, chat)
 	})
 }
@@ -67,7 +66,7 @@ func (ch *ChatHandler) FindChatById() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		id, err := strconv.ParseUint(sid, 10, 64)
+		id, err := strconv.ParseUint(sid, 10, 32)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
@@ -85,7 +84,6 @@ func (ch *ChatHandler) FindChatById() http.HandlerFunc {
 		if !chat.CheckPermissions(uint(userId)) {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrNoPermissions)
 		}
-		chat.Sanitize()
 		utils.Respond(w, r, http.StatusOK, chat)
 	})
 }
@@ -109,9 +107,7 @@ func (ch *ChatHandler) FilterChats() http.HandlerFunc {
 			utils.Error(w, r, http.StatusNoContent, err)
 			return
 		}
-		for i, _ := range chats {
-			chats[i].Sanitize()
-		}
+
 		utils.Respond(w, r, http.StatusOK, chats)
 	})
 }
@@ -124,7 +120,7 @@ func (ch *ChatHandler) UpdateChatByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		id, err := strconv.ParseUint(sid, 10, 64)
+		id, err := strconv.ParseUint(sid, 10, 32)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
@@ -161,7 +157,7 @@ func (ch *ChatHandler) UpdateChatByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusNotFound, err)
 			return
 		}
-		chat.Sanitize()
+
 		utils.Respond(w, r, http.StatusOK, chat)
 	})
 }
@@ -174,7 +170,7 @@ func (ch *ChatHandler) DeleteChatByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		id, err := strconv.ParseUint(sid, 10, 64)
+		id, err := strconv.ParseUint(sid, 10, 32)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return

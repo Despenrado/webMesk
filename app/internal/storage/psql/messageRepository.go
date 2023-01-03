@@ -36,8 +36,8 @@ func (mr *MessageRepository) ReadAll(ctx context.Context, skip int, limit int) (
 func (mr *MessageRepository) FindById(ctx context.Context, id uint) (*model.Message, error) {
 	message := &model.Message{}
 	res := mr.storage.DB.WithContext(ctx).Preload("Chat").Preload("Chat.MemberList").First(message, id)
-	if res.RowsAffected != 1 {
-		return nil, utils.ErrRowsNumberAffected(int(res.RowsAffected))
+	if res.Error != nil {
+		return nil, res.Error
 	}
 	return message, nil
 }
@@ -72,7 +72,7 @@ func (mr *MessageRepository) FilterMessage(ctx context.Context, messageFilter *m
 	} else {
 		query = query.Preload("Chat.MemberList")
 	}
-	if messageFilter.UnreadOnly {
+	if messageFilter.UnreadOnly && messageFilter.UserID > 0 {
 		log.Println("UnreadOnly", messageFilter.UserID)
 		query = query.Where("NOT (? = ANY(read_by))", messageFilter.UserID)
 	}
@@ -91,9 +91,6 @@ func (mr *MessageRepository) FilterMessage(ctx context.Context, messageFilter *m
 }
 
 func (mr *MessageRepository) MarkAsRead(ctx context.Context, id uint, user_id uint) error {
-	log.Println(user_id)
-	// res := mr.storage.db.Model(&model.Message{}).Where("id = ?", id).Update("read_by", gorm.Expr("array_append(read_by, ?)", user_id))
-	// res := mr.storage.db.Model(&model.Message{}).Where("id = ?", id).Update("read_by", gorm.Expr("(SELECT array_agg(distinct e) FROM unnest(read_by || ?) AS e)", pq.Int64Array([]int64{int64(user_id)})))
 	res := mr.storage.DB.Model(&model.Message{}).Where("id = ?", id).Update("read_by", gorm.Expr("(SELECT array_agg(distinct e) FROM unnest(read_by || (SELECT user_chat.user_id FROM user_chat, messages WHERE user_chat.chat_id = messages.chat_id AND messages.id = ? AND user_chat.user_id = ?)) AS e)", id, user_id))
 	return res.Error
 }

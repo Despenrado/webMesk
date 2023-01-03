@@ -90,7 +90,6 @@ func (ah *AuthHandler) ValidateToken(next http.Handler) http.Handler {
 			utils.Error(w, r, http.StatusUnauthorized, err)
 			return
 		}
-		// log.Println(r.Context().Value("user_id"))
 		next.ServeHTTP(w, r)
 	})
 }

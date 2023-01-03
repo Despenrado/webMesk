@@ -8,7 +8,7 @@ import (
 
 type Chat struct {
 	ID         uint    `json:"id,omitempty" gorm:"primaryKey"`
-	ChatName   string  `json:"chat_name,omitempty"`
+	ChatName   string  `json:"chat_name,omitempty" gorm:"not null"`
 	MemberList []*User `json:"member_list,omitempty" gorm:"many2many:user_chat"`
 }
 
@@ -45,7 +45,7 @@ func (c *Chat) CheckPermissions(userId uint) bool {
 	}
 	log.Println(userId)
 	for _, v := range c.MemberList {
-		log.Println(v)
+		log.Println(v.ID)
 		if v.ID == userId {
 			return true
 		}

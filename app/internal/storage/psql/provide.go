@@ -1,6 +1,8 @@
 package psql
 
 import (
+	"log"
+
 	"github.com/Despenrado/webMesk/internal/storage"
 	"github.com/Despenrado/webMesk/internal/utils"
 	"go.uber.org/fx"
@@ -13,7 +15,10 @@ func ProvidePSQLStorage(
 ) (storage.Storage, error) {
 	db, err := NewConnection(config.PostgreSQL)
 	if err != nil {
-		return nil, err
+		for err != nil {
+			log.Println(err)
+			db, err = NewConnection(config.PostgreSQL)
+		}
 	}
 	return NewStorage(db), nil
 }

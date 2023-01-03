@@ -2,6 +2,7 @@ package restapi
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -45,7 +46,6 @@ func (uh *UserHandler) CreateUser() http.HandlerFunc {
 			utils.Error(w, r, http.StatusInternalServerError, err)
 			return
 		}
-		usr.Sanitize()
 		utils.Respond(w, r, http.StatusCreated, usr)
 	})
 }
@@ -58,7 +58,7 @@ func (uh *UserHandler) FindUserById() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		id, err := strconv.ParseUint(sid, 10, 64)
+		id, err := strconv.ParseUint(sid, 10, 32)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
@@ -68,7 +68,6 @@ func (uh *UserHandler) FindUserById() http.HandlerFunc {
 			utils.Error(w, r, http.StatusNoContent, err)
 			return
 		}
-		usr.Sanitize()
 		utils.Respond(w, r, http.StatusOK, usr)
 	})
 }
@@ -86,22 +85,20 @@ func (uh *UserHandler) FilterUsers() http.HandlerFunc {
 			utils.Error(w, r, http.StatusNoContent, err)
 			return
 		}
-		for i := range users {
-			users[i].Sanitize()
-		}
 		utils.Respond(w, r, http.StatusOK, users)
 	})
 }
 
 func (uh *UserHandler) UpdateUserByID() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id, ok := r.Context().Value("user_id").(uint)
-		if !ok {
+		id, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 32)
+		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrUserNotFound)
 			return
 		}
+		log.Println(id)
 		usr := &model.User{}
-		err := json.NewDecoder(r.Body).Decode(usr)
+		err = json.NewDecoder(r.Body).Decode(usr)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
@@ -117,19 +114,18 @@ func (uh *UserHandler) UpdateUserByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusNotFound, err)
 			return
 		}
-		usr.Sanitize()
 		utils.Respond(w, r, http.StatusOK, usr)
 	})
 }
 
 func (uh *UserHandler) DeleteUserByID() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id, ok := r.Context().Value("user_id").(uint)
-		if !ok {
+		id, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 32)
+		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrUserNotFound)
 			return
 		}
-		err := uh.service.User().Delete(r.Context(), uint(id))
+		err = uh.service.User().Delete(r.Context(), uint(id))
 		if err != nil {
 			utils.Error(w, r, http.StatusInternalServerError, err)
 			return

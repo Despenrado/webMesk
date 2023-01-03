@@ -20,21 +20,38 @@ func NewUserService(storage storage.Storage) *UserService {
 
 func (us *UserService) Create(ctx context.Context, user *model.User) (*model.User, error) {
 	if err := user.BeforeCreate(); err != nil {
-		return user, err
+		return nil, err
 	}
-	return us.storage.User().Create(ctx, user)
+	usr, err := us.storage.User().Create(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+	usr.Sanitize()
+	return usr, nil
 }
 
 func (us *UserService) ReadAll(ctx context.Context, skip int, limit int) ([]model.User, error) {
-	return us.storage.User().ReadAll(ctx, skip, limit)
+	usrs, err := us.storage.User().ReadAll(ctx, skip, limit)
+	if err != nil {
+		return nil, err
+	}
+	for i := range usrs {
+		usrs[i].Sanitize()
+	}
+	return usrs, nil
 }
 
 func (us *UserService) FindById(ctx context.Context, id uint) (*model.User, error) {
-	return us.storage.User().FindById(ctx, id)
+	user, err := us.storage.User().FindById(ctx, id)
+	if err != nil {
+		return nil, utils.ErrRecordNotFound
+	}
+	user.Sanitize()
+	return user, nil
 }
 
 func (us *UserService) Update(ctx context.Context, user *model.User) (*model.User, error) {
-	oldUser, err := us.FindById(ctx, user.ID)
+	oldUser, err := us.storage.User().FindById(ctx, user.ID)
 	if err != nil {
 		return user, err
 	}
@@ -44,7 +61,12 @@ func (us *UserService) Update(ctx context.Context, user *model.User) (*model.Use
 	if err := user.BeforeCreate(); err != nil {
 		return user, err
 	}
-	return us.storage.User().Update(ctx, user)
+	user, err = us.storage.User().Update(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+	user.Sanitize()
+	return user, nil
 }
 
 func (us *UserService) Delete(ctx context.Context, id uint) error {
@@ -60,5 +82,12 @@ func (us *UserService) FindByEmail(ctx context.Context, email string) (*model.Us
 }
 
 func (us *UserService) FilterUser(ctx context.Context, userFilter *model.UserFilter) ([]model.User, error) {
-	return us.storage.User().GetUsersByFilter(ctx, userFilter)
+	usrs, err := us.storage.User().GetUsersByFilter(ctx, userFilter)
+	if err != nil {
+		return nil, err
+	}
+	for i := range usrs {
+		usrs[i].Sanitize()
+	}
+	return usrs, nil
 }

@@ -61,7 +61,7 @@ func (mh *MessageHandler) FindMessageByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		id, err := strconv.ParseUint(sid, 10, 64)
+		id, err := strconv.ParseUint(sid, 10, 32)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
@@ -79,7 +79,6 @@ func (mh *MessageHandler) FindMessageByID() http.HandlerFunc {
 		if !message.CheckPermissions(uint(userId)) {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrNoPermissions)
 		}
-		message.Sanitize()
 		utils.Respond(w, r, http.StatusOK, message)
 	})
 }
@@ -105,7 +104,6 @@ func (mh *MessageHandler) FilterMessages() http.HandlerFunc {
 		messageList := []model.Message{}
 		for _, v := range messages {
 			if v.CheckPermissions(uint(userId)) {
-				v.Sanitize()
 				messageList = append(messageList, v)
 			}
 		}
@@ -121,7 +119,7 @@ func (mh *MessageHandler) UpdateMessageByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		id, err := strconv.ParseUint(sid, 10, 64)
+		id, err := strconv.ParseUint(sid, 10, 32)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
@@ -145,7 +143,6 @@ func (mh *MessageHandler) UpdateMessageByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusNotFound, err)
 			return
 		}
-		message.Sanitize()
 		utils.Respond(w, r, http.StatusOK, message)
 	})
 }
@@ -158,7 +155,7 @@ func (mh *MessageHandler) DeleteMessageByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		id, err := strconv.ParseUint(sid, 10, 64)
+		id, err := strconv.ParseUint(sid, 10, 32)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
@@ -191,7 +188,7 @@ func (mh *MessageHandler) MarkAsRead() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		id, err := strconv.ParseUint(sid, 10, 64)
+		id, err := strconv.ParseUint(sid, 10, 32)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return

@@ -12,9 +12,9 @@ import (
 
 type User struct {
 	ID         uint      `json:"id,omitempty" gorm:"primaryKey"`
-	UserName   string    `json:"user_name,omitempty" gorm:"index"`
+	UserName   string    `json:"user_name,omitempty" gorm:"not null;index"`
 	Email      string    `json:"email,omitempty" gorm:"index:,unique"`
-	Password   string    `json:"password,omitempty"`
+	Password   string    `json:"password,omitempty" gorm:"not null"`
 	SessionId  string    `json:"sessionId,omitempty"`
 	LastOnline time.Time `json:"last_online,omitempty"`
 }
@@ -49,6 +49,8 @@ func (u *User) BeforeCreate() error {
 }
 
 func (u *User) VerifyPassword(p string) bool {
+	fmt.Println(u)
+	fmt.Println(p)
 	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(p)) == nil
 }
 

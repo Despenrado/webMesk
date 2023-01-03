@@ -1,4 +1,4 @@
-package psql_test
+package impl_test
 
 import (
 	"context"
@@ -7,12 +7,14 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Despenrado/webMesk/internal/service/impl"
 	"github.com/Despenrado/webMesk/internal/storage/psql"
 	"github.com/Despenrado/webMesk/internal/utils"
 	"github.com/bitcomplete/sqltestutil"
 )
 
 var storageInt *psql.Storage
+var serviceInt *impl.Service
 
 // func TestMain(m *testing.M) {
 // 	os.Setenv("TZ", "UTC")
@@ -87,5 +89,13 @@ func TestMain(m *testing.M) {
 	}
 	psqlStorage := psql.NewStorage(db)
 	storageInt = psqlStorage
+	serviceInt = impl.NewService(
+		storageInt,
+		nil,
+		impl.NewUserService(storageInt),
+		impl.NewChatService(storageInt),
+		impl.NewMessageService(storageInt),
+		nil,
+	)
 	m.Run()
 }

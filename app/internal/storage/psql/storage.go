@@ -1,8 +1,6 @@
 package psql
 
 import (
-	"log"
-
 	"github.com/Despenrado/webMesk/internal/model"
 	"github.com/Despenrado/webMesk/internal/storage"
 	"github.com/Despenrado/webMesk/internal/utils"
@@ -27,6 +25,12 @@ func NewConnection(config *utils.PostgreSQLConfig) (*gorm.DB, error) {
 			" sslmode=" + config.Master.SSLMode + " TimeZone=" + config.Master.TimeZone,
 		PreferSimpleProtocol: true,
 	}), &gorm.Config{SkipDefaultTransaction: true})
+	defer func() {
+		if err != nil {
+			dbInstance, _ := db.DB()
+			_ = dbInstance.Close()
+		}
+	}()
 	dialector := []gorm.Dialector{
 		postgres.New(postgres.Config{
 			DSN: "host=" + config.Master.Host + " port=" + config.Master.Port + " dbname=" + config.Master.DBName +
@@ -34,11 +38,7 @@ func NewConnection(config *utils.PostgreSQLConfig) (*gorm.DB, error) {
 				" sslmode=" + config.Master.SSLMode + " TimeZone=" + config.Master.TimeZone,
 			PreferSimpleProtocol: true,
 		})}
-	log.Println("------------------------------------------------------------------------------------------")
-	log.Println(config)
-	log.Println(config.Slave)
 	for _, v := range config.Slave {
-		log.Println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 		dialector = append(dialector, postgres.New(postgres.Config{
 			DSN: "host=" + v.Host + " port=" + v.Port + " dbname=" + config.Master.DBName +
 				" user=" + config.Master.User + " password=" + config.Master.Password +
@@ -51,9 +51,8 @@ func NewConnection(config *utils.PostgreSQLConfig) (*gorm.DB, error) {
 		Replicas: dialector,
 		Policy:   RoundRobinPolicy{counter: &counter},
 	}).
-		SetConnMaxIdleTime(100).
-		SetMaxOpenConns(200))
-
+		SetConnMaxIdleTime(10).
+		SetMaxOpenConns(50))
 	db.AutoMigrate(&model.User{}, &model.Chat{}, &model.Message{})
 	return db, err
 }

@@ -11,9 +11,9 @@ import (
 type Message struct {
 	ID          uint          `json:"id,omitempty" gorm:"primaryKey"`
 	UserID      uint          `json:"user_id,omitempty" gorm:"index"`
-	User        *User         `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	User        *User         `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	ChatID      uint          `json:"chat_id,omitempty" gorm:"index"`
-	Chat        *Chat         `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Chat        *Chat         `json:"-" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	DateTime    time.Time     `json:"date_time,omitempty"`
 	ReadBy      pq.Int64Array `json:"read_by,omitempty" gorm:"type:bigint[]"`
 	MessageData utils.JSONB   `json:"message_data,omitempty" gorm:"type:jsonb"`
@@ -47,6 +47,7 @@ func (m *Message) Validate() error {
 
 func (m *Message) BeforeCreate() error {
 	m.DateTime = time.Now()
+	m.ReadBy = make(pq.Int64Array, 0)
 	return nil
 }
 

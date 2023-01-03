@@ -1,4 +1,4 @@
-package psql_test
+package impl_test
 
 import (
 	"context"
@@ -90,13 +90,14 @@ func TestCreateMessage(t *testing.T) {
 		storageInt.DB.Exec("DELETE FROM users")
 		storageInt.DB.Exec("DELETE FROM messages")
 	}()
-	mr := storageInt.Message()
+	mr := serviceInt.Message()
 	testsData := prepareDataMessage(t)
 
 	for _, testData := range testsData {
 		msg, err := mr.Create(context.TODO(), testData.actual)
 		assert.Nil(t, err)
 		assert.NotNil(t, msg)
+		msg.DateTime = time.Time{}
 		testData.expected.ID = msg.ID
 		assert.Equal(t, testData.expected, msg)
 	}
@@ -110,7 +111,7 @@ func TestReadAllMessages(t *testing.T) {
 		storageInt.DB.Exec("DELETE FROM users")
 		storageInt.DB.Exec("DELETE FROM messages")
 	}()
-	mr := storageInt.Message()
+	mr := serviceInt.Message()
 	testsData := prepareDataMessage(t)
 
 	for _, testData := range testsData {
@@ -132,7 +133,7 @@ func TestFindByIdMessages(t *testing.T) {
 		storageInt.DB.Exec("DELETE FROM users")
 		storageInt.DB.Exec("DELETE FROM messages")
 	}()
-	mr := storageInt.Message()
+	mr := serviceInt.Message()
 	testsData := prepareDataMessage(t)
 
 	for _, testData := range testsData {
@@ -161,7 +162,7 @@ func TestUpdateMessage(t *testing.T) {
 		storageInt.DB.Exec("DELETE FROM users")
 		storageInt.DB.Exec("DELETE FROM messages")
 	}()
-	mr := storageInt.Message()
+	mr := serviceInt.Message()
 	testsData := prepareDataMessage(t)
 
 	for _, testData := range testsData {
@@ -190,7 +191,7 @@ func TestDeleteMessage(t *testing.T) {
 		storageInt.DB.Exec("DELETE FROM chats")
 		storageInt.DB.Exec("DELETE FROM users")
 	}()
-	mr := storageInt.Message()
+	mr := serviceInt.Message()
 	testsData := prepareDataMessage(t)
 
 	for _, testData := range testsData {
@@ -215,7 +216,7 @@ func TestGetUsersByFilterMessage(t *testing.T) {
 		storageInt.DB.Exec("DELETE FROM chats")
 		storageInt.DB.Exec("DELETE FROM users")
 	}()
-	mr := storageInt.Message()
+	mr := serviceInt.Message()
 	testsData := prepareDataMessage(t)
 
 	for _, testData := range testsData {
@@ -243,7 +244,7 @@ func TestMarkAsReadMessage(t *testing.T) {
 		storageInt.DB.Exec("DELETE FROM chats")
 		storageInt.DB.Exec("DELETE FROM users")
 	}()
-	mr := storageInt.Message()
+	mr := serviceInt.Message()
 	testsData := prepareDataMessage(t)
 
 	for _, testData := range testsData {

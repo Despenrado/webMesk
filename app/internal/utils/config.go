@@ -30,8 +30,7 @@ func LoadConfig() (*Config, error) {
 }
 
 type RestAPIServerConfig struct {
-	Port     string `yaml:"port"`
-	HTTPOnly bool   `yaml:"http_only"`
+	Port string `yaml:"port"`
 }
 
 type RedisConfig struct {

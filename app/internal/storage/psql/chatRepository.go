@@ -38,8 +38,8 @@ func (cr *ChatRepository) ReadAll(ctx context.Context, skip int, limit int) ([]m
 func (cr *ChatRepository) FindById(ctx context.Context, id uint) (*model.Chat, error) {
 	chat := &model.Chat{}
 	res := cr.storage.DB.WithContext(ctx).Preload("MemberList").First(chat, id)
-	if res.RowsAffected != 1 {
-		return nil, utils.ErrRowsNumberAffected(int(res.RowsAffected))
+	if res.Error != nil {
+		return nil, res.Error
 	}
 	return chat, nil
 }
@@ -91,7 +91,7 @@ func (cr *ChatRepository) FindByUserId(ctx context.Context, id uint) ([]model.Ch
 	// 	return nil, utils.ErrRowsNumberAffected(int(res.RowsAffected))
 	// }
 	chats := []model.Chat{}
-	res := cr.storage.DB.WithContext(ctx).Preload("MemberList", map[string]interface{}{"id": id}).Find(&chats)
+	res := cr.storage.DB.WithContext(ctx).Preload("MemberList").Where(map[string]interface{}{"id": id}).Find(&chats)
 	return chats, res.Error
 }
 
