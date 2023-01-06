@@ -29,7 +29,7 @@ func (mh *MessageHandler) CreateMessage() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		userId, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 32)
+		userId, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 64)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrUserNotFound)
 			return
@@ -49,7 +49,7 @@ func (mh *MessageHandler) CreateMessage() http.HandlerFunc {
 			utils.Error(w, r, http.StatusInternalServerError, err)
 			return
 		}
-		utils.Respond(w, r, http.StatusCreated, message)
+		utils.Respond(w, r, http.StatusOK, message)
 	})
 }
 
@@ -61,19 +61,19 @@ func (mh *MessageHandler) FindMessageByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		id, err := strconv.ParseUint(sid, 10, 32)
+		id, err := strconv.ParseUint(sid, 10, 64)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		userId, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 32)
+		userId, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 64)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrUserNotFound)
 			return
 		}
 		message, err := mh.service.Message().FindById(r.Context(), uint(id))
 		if err != nil {
-			utils.Error(w, r, http.StatusNoContent, err)
+			utils.Error(w, r, http.StatusNotFound, err)
 			return
 		}
 		if !message.CheckPermissions(uint(userId)) {
@@ -91,14 +91,14 @@ func (mh *MessageHandler) FilterMessages() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		userId, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 32)
+		userId, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 64)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrUserNotFound)
 			return
 		}
 		messages, err := mh.service.Message().FilterMessage(r.Context(), filter)
 		if err != nil {
-			utils.Error(w, r, http.StatusNoContent, err)
+			utils.Error(w, r, http.StatusNotFound, err)
 			return
 		}
 		messageList := []model.Message{}
@@ -119,7 +119,7 @@ func (mh *MessageHandler) UpdateMessageByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		id, err := strconv.ParseUint(sid, 10, 32)
+		id, err := strconv.ParseUint(sid, 10, 64)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
@@ -131,7 +131,7 @@ func (mh *MessageHandler) UpdateMessageByID() http.HandlerFunc {
 			return
 		}
 
-		userId, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 32)
+		userId, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 64)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrUserNotFound)
 			return
@@ -155,13 +155,13 @@ func (mh *MessageHandler) DeleteMessageByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		id, err := strconv.ParseUint(sid, 10, 32)
+		id, err := strconv.ParseUint(sid, 10, 64)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
 
-		userId, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 32)
+		userId, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 64)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrUserNotFound)
 			return
@@ -188,12 +188,12 @@ func (mh *MessageHandler) MarkAsRead() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		id, err := strconv.ParseUint(sid, 10, 32)
+		id, err := strconv.ParseUint(sid, 10, 64)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		usid, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 32)
+		usid, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 64)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrUserNotFound)
 			return

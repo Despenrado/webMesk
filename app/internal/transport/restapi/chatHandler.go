@@ -2,7 +2,6 @@ package restapi
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -30,7 +29,6 @@ func (ch *ChatHandler) CreateChat() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		log.Println(r.Context().Value("user_id"))
 		userId, err := strconv.ParseUint(r.Context().Value("user_id").(string), 10, 32)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrUserNotFound)
@@ -54,7 +52,7 @@ func (ch *ChatHandler) CreateChat() http.HandlerFunc {
 			utils.Error(w, r, http.StatusInternalServerError, err)
 			return
 		}
-		utils.Respond(w, r, http.StatusCreated, chat)
+		utils.Respond(w, r, http.StatusOK, chat)
 	})
 }
 
@@ -104,7 +102,7 @@ func (ch *ChatHandler) FilterChats() http.HandlerFunc {
 		filter.UserID = uint(userId)
 		chats, err := ch.service.Chat().FilterChat(r.Context(), filter)
 		if err != nil {
-			utils.Error(w, r, http.StatusNoContent, err)
+			utils.Error(w, r, http.StatusNotFound, err)
 			return
 		}
 

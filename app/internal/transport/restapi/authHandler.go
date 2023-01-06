@@ -36,7 +36,7 @@ func (ah *AuthHandler) SignUp() http.HandlerFunc {
 		}
 		w.Header().Set("Authorization", "Bearer "+token)
 		user.Sanitize()
-		utils.Respond(w, r, http.StatusCreated, user)
+		utils.Respond(w, r, http.StatusOK, user)
 	})
 }
 
@@ -55,7 +55,7 @@ func (ah *AuthHandler) SignIn() http.HandlerFunc {
 		}
 		w.Header().Set("Authorization", "Bearer "+token)
 		user.Sanitize()
-		utils.Respond(w, r, http.StatusCreated, user)
+		utils.Respond(w, r, http.StatusOK, user)
 	})
 }
 

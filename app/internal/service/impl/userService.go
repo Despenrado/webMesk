@@ -44,7 +44,7 @@ func (us *UserService) ReadAll(ctx context.Context, skip int, limit int) ([]mode
 func (us *UserService) FindById(ctx context.Context, id uint) (*model.User, error) {
 	user, err := us.storage.User().FindById(ctx, id)
 	if err != nil {
-		return nil, utils.ErrRecordNotFound
+		return nil, err
 	}
 	user.Sanitize()
 	return user, nil
@@ -76,7 +76,7 @@ func (us *UserService) Delete(ctx context.Context, id uint) error {
 func (us *UserService) FindByEmail(ctx context.Context, email string) (*model.User, error) {
 	user, err := us.storage.User().FindByEmail(ctx, email)
 	if err != nil {
-		return nil, utils.ErrRecordNotFound
+		return nil, err
 	}
 	return user, nil
 }

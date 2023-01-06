@@ -2,7 +2,6 @@ package impl_test
 
 import (
 	"context"
-	"log"
 	"testing"
 	"time"
 
@@ -58,7 +57,6 @@ func TestCreateChat(t *testing.T) {
 
 	for _, testData := range testsData {
 		cht, err := cr.Create(context.TODO(), testData.actual)
-		log.Println(cht)
 		assert.Nil(t, err)
 		assert.NotNil(t, cht)
 		testData.expected.ID = cht.ID
@@ -78,7 +76,6 @@ func TestReadAllChat(t *testing.T) {
 
 	for _, testData := range testsData {
 		actual, err := cr.Create(context.TODO(), testData.actual)
-		log.Println(actual)
 		testData.expected.ID = actual.ID
 		assert.Nil(t, err)
 	}

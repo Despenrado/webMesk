@@ -2,7 +2,6 @@ package impl
 
 import (
 	"context"
-	"log"
 	"strconv"
 	"time"
 
@@ -113,11 +112,9 @@ func (as *AtuthService) createToken(user *model.User) (string, error) {
 		ExpiresAt: time.Now().Add(as.jwtConfig.TknExpires).Unix(),
 	}
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	log.Println("jwtkey:", as.jwtConfig.JWTKey)
-	log.Println("claims:", claims)
+
 	tokenString, err := jwtToken.SignedString([]byte(as.jwtConfig.JWTKey))
 	if err != nil {
-		log.Println("jwtkey error")
 		return "", err
 	}
 	return tokenString, nil

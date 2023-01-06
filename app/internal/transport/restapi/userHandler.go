@@ -46,7 +46,7 @@ func (uh *UserHandler) CreateUser() http.HandlerFunc {
 			utils.Error(w, r, http.StatusInternalServerError, err)
 			return
 		}
-		utils.Respond(w, r, http.StatusCreated, usr)
+		utils.Respond(w, r, http.StatusOK, usr)
 	})
 }
 
@@ -65,7 +65,7 @@ func (uh *UserHandler) FindUserById() http.HandlerFunc {
 		}
 		usr, err := uh.service.User().FindById(r.Context(), uint(id))
 		if err != nil {
-			utils.Error(w, r, http.StatusNoContent, err)
+			utils.Error(w, r, http.StatusNotFound, err)
 			return
 		}
 		utils.Respond(w, r, http.StatusOK, usr)
@@ -82,7 +82,7 @@ func (uh *UserHandler) FilterUsers() http.HandlerFunc {
 		}
 		users, err := uh.service.User().FilterUser(r.Context(), filter)
 		if err != nil {
-			utils.Error(w, r, http.StatusNoContent, err)
+			utils.Error(w, r, http.StatusNotFound, err)
 			return
 		}
 		utils.Respond(w, r, http.StatusOK, users)
@@ -144,10 +144,10 @@ func (uh *UserHandler) FindUserByEmail() http.HandlerFunc {
 		}
 		usr, err := uh.service.User().FindByEmail(r.Context(), email)
 		if err != nil {
-			utils.Error(w, r, http.StatusNoContent, err)
+			utils.Error(w, r, http.StatusNotFound, err)
 			return
 		}
 		usr.Sanitize()
-		utils.Respond(w, r, http.StatusFound, usr)
+		utils.Respond(w, r, http.StatusOK, usr)
 	})
 }

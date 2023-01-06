@@ -51,8 +51,8 @@ func NewConnection(config *utils.PostgreSQLConfig) (*gorm.DB, error) {
 		Replicas: dialector,
 		Policy:   RoundRobinPolicy{counter: &counter},
 	}).
-		SetConnMaxIdleTime(10).
-		SetMaxOpenConns(50))
+		SetConnMaxIdleTime(20).
+		SetMaxOpenConns(100))
 	db.AutoMigrate(&model.User{}, &model.Chat{}, &model.Message{})
 	return db, err
 }

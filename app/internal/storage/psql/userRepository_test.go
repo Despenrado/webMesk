@@ -2,7 +2,6 @@ package psql_test
 
 import (
 	"context"
-	"log"
 	"testing"
 	"time"
 
@@ -56,7 +55,6 @@ func TestReadAllUser(t *testing.T) {
 	}
 	for i, testData := range testsData {
 		usr, err := ur.Create(context.TODO(), testData.user)
-		log.Println(usr)
 		testData.expected.ID = usr.ID
 		testsData[i].expected = testData.expected
 		assert.Nil(t, err)
@@ -64,7 +62,6 @@ func TestReadAllUser(t *testing.T) {
 	defer storageInt.DB.Exec("DELETE FROM users")
 
 	usrs, err := ur.ReadAll(context.TODO(), 0, 10)
-	log.Println(usrs)
 	assert.Nil(t, err)
 	assert.NotNil(t, usrs)
 	assert.Equal(t, len(usrs), 1)

@@ -2,7 +2,6 @@ package psql
 
 import (
 	"context"
-	"log"
 
 	"github.com/Despenrado/webMesk/internal/model"
 	"github.com/Despenrado/webMesk/pkg/utils"
@@ -73,7 +72,6 @@ func (mr *MessageRepository) FilterMessage(ctx context.Context, messageFilter *m
 		query = query.Preload("Chat.MemberList")
 	}
 	if messageFilter.UnreadOnly && messageFilter.UserID > 0 {
-		log.Println("UnreadOnly", messageFilter.UserID)
 		query = query.Where("NOT (? = ANY(read_by))", messageFilter.UserID)
 	}
 	if messageFilter.ChatID != 0 {
@@ -83,10 +81,8 @@ func (mr *MessageRepository) FilterMessage(ctx context.Context, messageFilter *m
 	if messageFilter.Limit != 0 {
 		query = query.Limit(int(messageFilter.Limit))
 	}
-	log.Println(query)
 	messages := []model.Message{}
 	res := query.Debug().Find(&messages)
-	log.Println(messages)
 	return messages, res.Error
 }
 

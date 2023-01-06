@@ -1,8 +1,6 @@
 package model
 
 import (
-	"log"
-
 	validation "github.com/go-ozzo/ozzo-validation"
 )
 
@@ -43,9 +41,7 @@ func (c *Chat) CheckPermissions(userId uint) bool {
 	if c.MemberList == nil {
 		return false
 	}
-	log.Println(userId)
 	for _, v := range c.MemberList {
-		log.Println(v.ID)
 		if v.ID == userId {
 			return true
 		}

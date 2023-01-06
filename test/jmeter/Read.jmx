@@ -199,7 +199,7 @@
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">300</stringProp>
+        <stringProp name="ThreadGroup.num_threads">1000</stringProp>
         <stringProp name="ThreadGroup.ramp_time">10</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
@@ -207,16 +207,101 @@
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
       <hashTree>
-        <kg.apc.jmeter.timers.VariableThroughputTimer guiclass="kg.apc.jmeter.timers.VariableThroughputTimerGui" testclass="kg.apc.jmeter.timers.VariableThroughputTimer" testname="jp@gc - Throughput Shaping Timer" enabled="true">
+        <kg.apc.jmeter.timers.VariableThroughputTimer guiclass="kg.apc.jmeter.timers.VariableThroughputTimerGui" testclass="kg.apc.jmeter.timers.VariableThroughputTimer" testname="jp@gc - Throughput Shaping Timer" enabled="false">
           <collectionProp name="load_profile">
-            <collectionProp name="1396121625">
+            <collectionProp name="-2147210867">
               <stringProp name="49">1</stringProp>
-              <stringProp name="49586">200</stringProp>
+              <stringProp name="50547">300</stringProp>
               <stringProp name="1572">15</stringProp>
             </collectionProp>
-            <collectionProp name="-816509652">
-              <stringProp name="49586">200</stringProp>
-              <stringProp name="49586">200</stringProp>
+            <collectionProp name="-48970399">
+              <stringProp name="50547">300</stringProp>
+              <stringProp name="50547">300</stringProp>
+              <stringProp name="1629">30</stringProp>
+            </collectionProp>
+            <collectionProp name="-70840930">
+              <stringProp name="50547">300</stringProp>
+              <stringProp name="51508">400</stringProp>
+              <stringProp name="53">5</stringProp>
+            </collectionProp>
+            <collectionProp name="1040917185">
+              <stringProp name="51508">400</stringProp>
+              <stringProp name="51508">400</stringProp>
+              <stringProp name="1629">30</stringProp>
+            </collectionProp>
+            <collectionProp name="1018299957">
+              <stringProp name="51508">400</stringProp>
+              <stringProp name="52469">500</stringProp>
+              <stringProp name="53">5</stringProp>
+            </collectionProp>
+            <collectionProp name="2106910465">
+              <stringProp name="52469">500</stringProp>
+              <stringProp name="52469">500</stringProp>
+              <stringProp name="1629">30</stringProp>
+            </collectionProp>
+            <collectionProp name="2085064021">
+              <stringProp name="52469">500</stringProp>
+              <stringProp name="53430">600</stringProp>
+              <stringProp name="53">5</stringProp>
+            </collectionProp>
+            <collectionProp name="-1097398463">
+              <stringProp name="53430">600</stringProp>
+              <stringProp name="53430">600</stringProp>
+              <stringProp name="1629">30</stringProp>
+            </collectionProp>
+            <collectionProp name="-1120015691">
+              <stringProp name="53430">600</stringProp>
+              <stringProp name="54391">700</stringProp>
+              <stringProp name="53">5</stringProp>
+            </collectionProp>
+            <collectionProp name="-31405183">
+              <stringProp name="54391">700</stringProp>
+              <stringProp name="54391">700</stringProp>
+              <stringProp name="1629">30</stringProp>
+            </collectionProp>
+            <collectionProp name="-53275714">
+              <stringProp name="54391">700</stringProp>
+              <stringProp name="55352">800</stringProp>
+              <stringProp name="53">5</stringProp>
+            </collectionProp>
+            <collectionProp name="1058482401">
+              <stringProp name="55352">800</stringProp>
+              <stringProp name="55352">800</stringProp>
+              <stringProp name="1629">30</stringProp>
+            </collectionProp>
+            <collectionProp name="1036611870">
+              <stringProp name="55352">800</stringProp>
+              <stringProp name="56313">900</stringProp>
+              <stringProp name="53">5</stringProp>
+            </collectionProp>
+            <collectionProp name="-2146597311">
+              <stringProp name="56313">900</stringProp>
+              <stringProp name="56313">900</stringProp>
+              <stringProp name="1629">30</stringProp>
+            </collectionProp>
+            <collectionProp name="723478399">
+              <stringProp name="56313">900</stringProp>
+              <stringProp name="1507423">1000</stringProp>
+              <stringProp name="53">5</stringProp>
+            </collectionProp>
+            <collectionProp name="1291256769">
+              <stringProp name="1507423">1000</stringProp>
+              <stringProp name="1507423">1000</stringProp>
+              <stringProp name="1629">30</stringProp>
+            </collectionProp>
+          </collectionProp>
+        </kg.apc.jmeter.timers.VariableThroughputTimer>
+        <hashTree/>
+        <kg.apc.jmeter.timers.VariableThroughputTimer guiclass="kg.apc.jmeter.timers.VariableThroughputTimerGui" testclass="kg.apc.jmeter.timers.VariableThroughputTimer" testname="jp@gc - Throughput Shaping Timer" enabled="true">
+          <collectionProp name="load_profile">
+            <collectionProp name="187272926">
+              <stringProp name="49">1</stringProp>
+              <stringProp name="1596796">4000</stringProp>
+              <stringProp name="1572">15</stringProp>
+            </collectionProp>
+            <collectionProp name="1584101970">
+              <stringProp name="1596796">4000</stringProp>
+              <stringProp name="1596796">4000</stringProp>
               <stringProp name="50547">300</stringProp>
             </collectionProp>
           </collectionProp>
@@ -247,7 +332,7 @@
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">0.0.0.0</stringProp>
+          <stringProp name="HTTPSampler.domain">192.168.0.225</stringProp>
           <stringProp name="HTTPSampler.port">8081</stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
