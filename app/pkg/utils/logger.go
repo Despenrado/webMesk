@@ -18,7 +18,9 @@ type Logger struct {
 }
 
 func NewLogger() *Logger {
-	return &Logger{*logrus.New()}
+	lg := *logrus.New()
+	lg.SetLevel(logrus.WarnLevel)
+	return &Logger{lg}
 }
 
 func SetRequestId(next http.Handler) http.Handler {
@@ -52,15 +54,14 @@ func (lg *Logger) LogRequest(next http.Handler) http.Handler {
 		default:
 			level = logrus.InfoLevel
 		}
-		if level != logrus.InfoLevel {
-			logger.Logf(
-				level,
-				"completed request: id:%s, %d %s in %v",
-				w.Header().Get("X-Request-ID"),
-				resWriter.code,
-				http.StatusText(resWriter.code),
-				time.Since(start),
-			)
-		}
+		logger.Logf(
+			level,
+			"completed request: id:%s, %d %s in %v",
+			w.Header().Get("X-Request-ID"),
+			resWriter.code,
+			http.StatusText(resWriter.code),
+			time.Since(start),
+		)
+
 	})
 }

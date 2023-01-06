@@ -22,7 +22,7 @@ services:
     ports:
       - '49261:5432'
     volumes: 
-      - ~/database/postgresql/webmesk:/bitnami/postgresql
+      - ../../database/postgresql:/bitnami/postgresql
   # db-slave-1:
   #   container_name: postgres-slave-1-webmesk
   #   deploy:
@@ -79,7 +79,7 @@ services:
     ports:
       - "63799:6379"
     volumes: # Volume binding
-      - "/opt/redis/data:/data"
+      - "../../database/redis:/data"
     deploy:
       resources:
         limits:

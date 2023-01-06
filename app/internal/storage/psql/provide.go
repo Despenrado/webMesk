@@ -2,6 +2,7 @@ package psql
 
 import (
 	"log"
+	"time"
 
 	"github.com/Despenrado/webMesk/internal/storage"
 	"github.com/Despenrado/webMesk/internal/utils"
@@ -17,6 +18,7 @@ func ProvidePSQLStorage(
 	if err != nil {
 		for err != nil {
 			log.Println(err)
+			time.Sleep(5 * time.Second)
 			db, err = NewConnection(config.PostgreSQL)
 		}
 	}
