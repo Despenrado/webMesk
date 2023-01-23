@@ -3,13 +3,15 @@ services:
   # pstgres-master
   db-master:
     container_name: postgres-master-webmesk
+    sysctls:
+      net.ipv4.ip_local_port_range: "49152 65535"
     deploy:
       resources:
         limits:
-          cpus: '4.0'
-          memory: 4096M
+          cpus: '8.0'
+          memory: 8192M
     image: postgres:14.1-alpine
-    command: postgres -c 'max_connections=500'
+    command: postgres -c 'max_connections=10000'
     restart: always
     environment:
       - POSTGRES_USER=gorm
@@ -18,7 +20,7 @@ services:
     ports:
       - '49261:5432'
     volumes: 
-      - ../../database/postgresql:/bitnami/postgresql
+      - ../../database/postgresql:/var/lib/postgresql/data
   
   # redis
   cache-db:
@@ -53,8 +55,6 @@ services:
       - "8081"
     links: # list mapping: service_name:name_how_will_see_your_program
       - "db-master:psql"
-      # - "db-slave-1:psql-slave-1"
-      # - "db-slave-2:psql-slave-2"
       - "cache-db:redis"
   
   golang-restapi-2: # The name of the service
@@ -133,21 +133,6 @@ services:
       - golang-restapi-3
       - golang-restapi-4
 
-  haproxy:
-    image: haproxy:2.7
-    profiles: 
-      - haproxy
-    container_name: haproxy-webmesk
-    volumes:
-      - ../configs/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-    ports:
-      - "8081:8081"
-    links:
-      - golang-restapi-1
-      - golang-restapi-2
-      - golang-restapi-3
-      - golang-restapi-4
-      
   telegraf:
     image: telegraf
     container_name: telegraf
@@ -155,7 +140,7 @@ services:
     volumes:
       - ../configs/telegraf.conf:/etc/telegraf/telegraf.conf:ro
       - /var/run/docker.sock:/var/run/docker.sock
-    user: telegraf:969 # allows to read '/var/run/docker.sock'. 'number' is the group of docker daemon
+    user: telegraf:999 # allows to read '/var/run/docker.sock'. 'number' is the group of docker daemon
     ports:
       - "8125:8125"
 

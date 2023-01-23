@@ -64,12 +64,11 @@ func (mr *MessageRepository) FilterMessage(ctx context.Context, messageFilter *m
 		query = query.Where(filter, messageFilter.DateTime)
 	}
 	if messageFilter.UserID != 0 {
-		query = query.Where("messages.user_id = ?", messageFilter.UserID)
-		if !messageFilter.OwnerOnly {
-			query = query.Preload("Chat.MemberList", "id = ?", messageFilter.UserID)
+		if messageFilter.OwnerOnly {
+			query = query.Where("messages.user_id = ?", messageFilter.UserID)
+		} else {
+			query = query.Joins("JOIN chats ON chats.id = messages.chat_id").Joins("JOIN user_chat ON chats.id = user_chat.chat_id").Where("user_chat.user_id = ?", messageFilter.UserID)
 		}
-	} else {
-		query = query.Preload("Chat.MemberList")
 	}
 	if messageFilter.UnreadOnly && messageFilter.UserID > 0 {
 		query = query.Where("NOT (? = ANY(read_by))", messageFilter.UserID)
@@ -82,7 +81,7 @@ func (mr *MessageRepository) FilterMessage(ctx context.Context, messageFilter *m
 		query = query.Limit(int(messageFilter.Limit))
 	}
 	messages := []model.Message{}
-	res := query.Debug().Find(&messages)
+	res := query.Find(&messages)
 	return messages, res.Error
 }
 

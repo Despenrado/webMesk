@@ -108,6 +108,6 @@ func (cr *ChatRepository) FilterChat(ctx context.Context, chatFilter *model.Chat
 		query = query.Limit(int(chatFilter.Limit))
 	}
 	chats := []model.Chat{}
-	res := query.Debug().Find(&chats)
+	res := query.Find(&chats)
 	return chats, res.Error
 }

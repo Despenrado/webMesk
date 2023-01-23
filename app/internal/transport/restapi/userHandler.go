@@ -2,7 +2,6 @@ package restapi
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -96,7 +95,6 @@ func (uh *UserHandler) UpdateUserByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrUserNotFound)
 			return
 		}
-		log.Println(id)
 		usr := &model.User{}
 		err = json.NewDecoder(r.Body).Decode(usr)
 		if err != nil {

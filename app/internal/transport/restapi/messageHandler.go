@@ -96,18 +96,13 @@ func (mh *MessageHandler) FilterMessages() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrUserNotFound)
 			return
 		}
+		filter.UserID = uint(userId)
 		messages, err := mh.service.Message().FilterMessage(r.Context(), filter)
 		if err != nil {
 			utils.Error(w, r, http.StatusNotFound, err)
 			return
 		}
-		messageList := []model.Message{}
-		for _, v := range messages {
-			if v.CheckPermissions(uint(userId)) {
-				messageList = append(messageList, v)
-			}
-		}
-		utils.Respond(w, r, http.StatusOK, messageList)
+		utils.Respond(w, r, http.StatusOK, messages)
 	})
 }
 

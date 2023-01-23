@@ -1,6 +1,8 @@
 package psql
 
 import (
+	"time"
+
 	"github.com/Despenrado/webMesk/internal/model"
 	"github.com/Despenrado/webMesk/internal/storage"
 	"github.com/Despenrado/webMesk/internal/utils"
@@ -51,8 +53,9 @@ func NewConnection(config *utils.PostgreSQLConfig) (*gorm.DB, error) {
 		Replicas: dialector,
 		Policy:   RoundRobinPolicy{counter: &counter},
 	}).
-		SetConnMaxIdleTime(20).
-		SetMaxOpenConns(100))
+		SetConnMaxIdleTime(10 * time.Second).
+		SetConnMaxLifetime(30 * time.Second).
+		SetMaxOpenConns(1000))
 	db.AutoMigrate(&model.User{}, &model.Chat{}, &model.Message{})
 	return db, err
 }

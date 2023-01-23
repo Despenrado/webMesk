@@ -117,7 +117,7 @@ func (ur *UserRepository) GetUsersByFilter(ctx context.Context, userFilter *mode
 		query = query.Limit(int(userFilter.Limit))
 	}
 	users := []model.User{}
-	res := query.Debug().Find(&users)
+	res := query.Find(&users)
 	if res.Error != nil {
 		return nil, res.Error
 	}
