@@ -51,6 +51,7 @@ func TestCreateChat(t *testing.T) {
 		storageInt.DB.Exec("DELETE FROM user_chat")
 		storageInt.DB.Exec("DELETE FROM chats")
 		storageInt.DB.Exec("DELETE FROM users")
+
 	}()
 	cr := serviceInt.Chat()
 	testsData := prepareData(t)
